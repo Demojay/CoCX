@@ -1367,7 +1367,7 @@ use namespace CoC;
 		}
 		public function ElectrifyWeaponActive():Boolean
 		{
-			return ((isMaceHammerTypeWeapon() || isDuelingTypeWeapon() || isSwordTypeWeapon() || isAxeTypeWeapon() || isDaggerTypeWeapon() || isScytheTypeWeapon()) && hasStatusEffect(StatusEffects.ElectrifyWeapon));
+			return ((isMaceHammerTypeWeapon() || isDuelingTypeWeapon() || isSwordTypeWeapon() || isAxeTypeWeapon() || isDaggerTypeWeapon() || isScytheTypeWeapon()) && CombatAbilities.ElectrifyWeapon.isActive());
 		}
 		public function mummyControlLimit():Number
 		{

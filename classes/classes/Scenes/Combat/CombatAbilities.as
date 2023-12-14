@@ -409,11 +409,25 @@ public class CombatAbilities {
 		AdamantineShell,
 		MomentofClarity,
 		FusionSpecial4th,
-		FusionSpecial5th
+		FusionSpecial5th,
 	];
 
+	public static const PleasureBolt:PleasureBoltSkill = new PleasureBoltSkill();
+	public static const OrgasmicLightningStrike:OrgasmicLightningStrikeSkill = new OrgasmicLightningStrikeSkill();
+	public static const SpectralScream:SpectralScreamSkill = new SpectralScreamSkill();
+	public static const CursedRiddle:CursedRiddleSkill = new CursedRiddleSkill();
+	public static const LustStorm:LustStormSkill = new LustStormSkill();
+	public static const PlasmaBlast:PlasmaBlastSkill = new PlasmaBlastSkill();
+	public static const ElectrifyWeapon:ElectrifyWeaponSkill = new ElectrifyWeaponSkill();
+
 	public static const ALL_MAGICAL_SPECIALS:/*CombatAbility*/Array = [
-		
+		CursedRiddle,
+		SpectralScream,
+		OrgasmicLightningStrike,
+		PleasureBolt,
+		LustStorm,
+		PlasmaBlast,
+		ElectrifyWeapon
 	]
 	.concat(ALL_ELEMENTAL_FUSION_ATTACKS);
 	

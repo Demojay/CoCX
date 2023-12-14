@@ -51,7 +51,7 @@ use namespace CoC;
 		}
 		
 		private function vegotW():void {
-			if (hasStatusEffect(StatusEffects.lustStorm)) {
+			if (hasStatusEffect(StatusEffects.LustStorm)) {
 				outputText("The Raiju King continues building up the energy before he thrusts his hands forward, causing strikes of lightning to hit the ground around you! ");
 				player.takeLightningDamage(vegotW1() * 3, true);
 				player.takeLustDamage(vegotW2() * 3, true);
@@ -60,7 +60,7 @@ use namespace CoC;
 				outputText("The Raiju King clenches his fists as electricity builds up within his body. Clouds begin forming from above, blocking out the ceiling, thunder rumbles. The storm encroaches! ");
 				player.takeLightningDamage(vegotW1() * 2, true);
 				player.takeLustDamage(vegotW2() * 2, true);
-				createStatusEffect(StatusEffects.lustStorm, 0, 0, 0, 0);
+				createStatusEffect(StatusEffects.LustStorm, 0, 0, 0, 0);
 			}
 		}
 		private function vegotW1():Number {
@@ -111,7 +111,7 @@ use namespace CoC;
 		
 		override protected function performCombatAction():void
 		{
-			if (hasStatusEffect(StatusEffects.lustStorm)) {
+			if (hasStatusEffect(StatusEffects.LustStorm)) {
 				outputText("You're struck by lightning as lust storm rages on.");
 				player.takeLightningDamage(vegotW1(), true);
 				player.takeLustDamage(vegotW2(), true);

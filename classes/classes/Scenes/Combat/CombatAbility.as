@@ -193,23 +193,27 @@ public class CombatAbility extends BaseCombatContent {
 		name: 'Acid',
 		desc: "This ability's primary element is Acid"
 	});
-	public static const TAG_TIER1:int = EnumValue.add(AllTags, 15, 'TIER1', {
+	public static const TAG_PLASMA:int = EnumValue.add(AllTags, 15, 'PLASMA', {
+		name: 'Plasma',
+		desc: "This ability's primary element is Plasma"
+	});
+	public static const TAG_TIER1:int = EnumValue.add(AllTags, 16, 'TIER1', {
 		name: 'Tier1',
 		desc: "This ability is tier 1"
 	});
-	public static const TAG_TIER2:int = EnumValue.add(AllTags, 16, 'TIER2', {
+	public static const TAG_TIER2:int = EnumValue.add(AllTags, 17, 'TIER2', {
 		name: 'Tier2',
 		desc: "This ability is tier 2"
 	});
-	public static const TAG_TIER3:int = EnumValue.add(AllTags, 17, 'TIER3', {
+	public static const TAG_TIER3:int = EnumValue.add(AllTags, 18, 'TIER3', {
 		name: 'Tier3',
 		desc: "This ability is tier 3"
 	});
-	public static const TAG_PHYSICAL:int = EnumValue.add(AllTags, 18, 'PHYSICAL', {
+	public static const TAG_PHYSICAL:int = EnumValue.add(AllTags, 19, 'PHYSICAL', {
 		name: 'Physical',
 		desc: "This ability deals physical damage"
 	});
-	public static const TAG_MAGICAL:int = EnumValue.add(AllTags, 19, 'MAGICAL', {
+	public static const TAG_MAGICAL:int = EnumValue.add(AllTags, 20, 'MAGICAL', {
 		name: 'Magical',
 		desc: "This ability deals magical damage"
 	});

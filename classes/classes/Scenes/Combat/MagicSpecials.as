@@ -121,7 +121,7 @@ public class MagicSpecials extends BaseCombatContent {
 			if (player.isRaceCached(Races.THUNDERBIRD) && player.isFlying()) {
 				// Lust Storm
 				bd = buttons.add("Lust storm", Luststorm).hint("Supercharge the air with your lusty electricity to unleash a thunderstorm.");
-				if (player.hasStatusEffect(StatusEffects.lustStorm)) bd.disable("<b>You already unleashed a thunderstorm on the battlefield</b>\n\n");
+				if (player.hasStatusEffect(StatusEffects.LustStorm)) bd.disable("<b>You already unleashed a thunderstorm on the battlefield</b>\n\n");
 			}
 			if (player.isRaceCached(Races.KIRIN)) {
 				//Electrify Weapon
@@ -1489,7 +1489,7 @@ public class MagicSpecials extends BaseCombatContent {
 		checkAchievementDamage(damage);
 		combat.heroBaneProc(damage);
 		statScreenRefresh();
-		player.createStatusEffect(StatusEffects.lustStorm,0,0,0,0);
+		player.createStatusEffect(StatusEffects.LustStorm,0,0,0,0);
 		if (monster.HP <= monster.minHP()) doNext(endHpVictory);
 		if (monster.lust >= monster.maxOverLust()) doNext(endLustVictory);
 		else enemyAI();

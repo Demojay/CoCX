@@ -6811,20 +6811,20 @@ public class Combat extends BaseContent {
 
     public function isFireTypeWeapon():Boolean {
         return ((player.weapon == weapons.RCLAYMO || player.weapon == weapons.TRCLAYM || player.weapon == weapons.RDAGGER) && (player.hasStatusEffect(StatusEffects.ChargeWeapon) || Forgefather.channelInlay == "ruby")) || player.weapon == weapons.TIDAR || player.weapon == weapons.ATWINSCY
-		|| (player.hasStatusEffect(StatusEffects.FlameBlade) && !player.hasStatusEffect(StatusEffects.ElectrifyWeapon));
+		|| (player.hasStatusEffect(StatusEffects.FlameBlade) && !CombatAbilities.ElectrifyWeapon.isActive());
     }
     public function isIceTypeWeapon():Boolean {
         return ((player.weapon == weapons.SCLAYMO || player.weapon == weapons.TSCLAYM || player.weapon == weapons.SDAGGER) && (player.hasStatusEffect(StatusEffects.ChargeWeapon) || Forgefather.channelInlay == "sapphire")) || player.weapon == weapons.BCLAWS;
     }
     public function isLightningTypeWeapon():Boolean {
         return ((player.weapon == weapons.TCLAYMO || player.weapon == weapons.TTCLAYM || player.weapon == weapons.TODAGGER) && (player.hasStatusEffect(StatusEffects.ChargeWeapon) || Forgefather.channelInlay == "topaz")) || player.weapon == weapons.S_RULER || player.weapon == weapons.TSRULER
-		|| (player.hasStatusEffect(StatusEffects.ElectrifyWeapon) && !player.hasStatusEffect(StatusEffects.FlameBlade));
+		|| (CombatAbilities.ElectrifyWeapon.isActive() && !player.hasStatusEffect(StatusEffects.FlameBlade));
     }
     public function isDarknessTypeWeapon():Boolean {
         return ((player.weapon == weapons.ACLAYMO || player.weapon == weapons.TACLAYM || player.weapon == weapons.ADAGGER) && (player.hasStatusEffect(StatusEffects.ChargeWeapon) || Forgefather.channelInlay == "amethyst"));
     }
     public function isPlasmaTypeWeapon():Boolean {
-        return (player.hasStatusEffect(StatusEffects.FlameBlade) && player.hasStatusEffect(StatusEffects.ElectrifyWeapon));
+        return (player.hasStatusEffect(StatusEffects.FlameBlade) && CombatAbilities.ElectrifyWeapon.isActive());
     }
 	
 	public function isUnarmedCombatButDealFireDamage():Boolean {
@@ -9608,85 +9608,6 @@ public class Combat extends BaseContent {
             outputText("\n\n");
             bonusExpAfterSuccesfullTease();
         }
-        //Lust storm
-        if (player.hasStatusEffect(StatusEffects.lustStorm)) {
-            var damage0:Number = scalingBonusIntelligence() * spellModWhite();
-            //Determine if critical hit!
-            var crit1:Boolean = false;
-            var critChance1:int = 5;
-            critChance1 += combatMagicalCritical();
-            if (monster.isImmuneToCrits() && !player.hasPerk(PerkLib.EnableCriticals)) critChance1 = 0;
-            if (rand(100) < critChance1) {
-                crit1 = true;
-                damage0 *= 1.75;
-            }
-            //High damage to goes.
-            damage0 = magic.calcVoltageModImpl(damage0, true);
-            if (player.hasPerk(PerkLib.ElectrifiedDesire)) damage0 *= (1 + (player.lust100 * 0.01));
-            if (player.hasPerk(PerkLib.RacialParagon)) damage0 *= RacialParagonAbilityBoost();
-            damage0 = Math.round(damage0);
-            dynStats("lus", (Math.round(player.maxLust() * 0.02)), "scale", false);
-            
-            var lustDmgF:Number = 20 + rand(6);
-            var lustBoostToLustDmg:Number = 0;
-            lustDmgF += scalingBonusLibido() * 0.1;
-            switch (player.coatType()) {
-                case Skin.FUR:
-                    lustDmgF += (1 + player.newGamePlusMod());
-                    break;
-                case Skin.SCALES:
-                    lustDmgF += (2 * (1 + player.newGamePlusMod()));
-                    break;
-                case Skin.CHITIN:
-                    lustDmgF += (3 * (1 + player.newGamePlusMod()));
-                    break;
-                case Skin.BARK:
-                    lustDmgF += (4 * (1 + player.newGamePlusMod()));
-                    break;
-            }
-            
-            lustDmgF = teases.teaseAuraLustDamageBonus(monster, lustDmgF);
-            if (player.hasPerk(PerkLib.RacialParagon)) lustDmgF *= RacialParagonAbilityBoost();
-            
-            lustBoostToLustDmg += lustDmgF * 0.01;
-            lustDmgF *= 0.2;
-            if (player.lust100 * 0.01 >= 0.9) lustDmgF += (lustBoostToLustDmg * 140);
-            else if (player.lust100 * 0.01 < 0.2) lustDmgF += (lustBoostToLustDmg * 140);
-            else lustDmgF += (lustBoostToLustDmg * 2 * (20 - (player.lust100 * 0.01)));
-            
-            //Determine if critical tease!
-            var crit2:Boolean = false;
-            var critChance2:int = 5;
-            critChance2 += teases.combatTeaseCritical();
-            if (monster.isImmuneToCrits() && !player.hasPerk(PerkLib.EnableCriticals)) critChance2 = 0;
-            if (rand(100) < critChance2) {
-                crit2 = true;
-                lustDmgF *= 1.75;
-            }
-
-            lustDmgF = lustDmgF * monster.lustVuln;
-            lustDmgF = lustDmgF/2;
-
-            lustDmgF = Math.round(lustDmgF);
-            outputText("Your opponent is struck by lightning as your lust storm rages on.")
-            damage0 = doLightningDamage(damage0, true, true);
-            if (crit1) outputText(" <b>*Critical!*</b>");
-            monster.teased(lustDmgF, false);
-            if (crit2) outputText(" <b>Critical!</b>");
-            outputText(" as a bolt falls from the sky!\n\n");
-
-            combat.bonusExpAfterSuccesfullTease();
-            if (player.hasPerk(PerkLib.EromancyMaster)) combat.teaseXP(1 + combat.bonusExpAfterSuccesfullTease());
-            if (player.perkv1(IMutationsLib.HeartOfTheStormIM) >= 3){
-                if (rand(100) < 10) {
-                    if (!monster.hasPerk(PerkLib.Resolute)) monster.createStatusEffect(StatusEffects.Stunned,2,0,0,0);
-                }
-            }
-            checkAchievementDamage(damage0);
-            statScreenRefresh();
-            if (monster.HP <= monster.minHP()) doNext(endHpVictory);
-            if (monster.lust >= monster.maxOverLust()) doNext(endLustVictory);
-        }
         //Sing
         if (player.hasStatusEffect(StatusEffects.Sing) && monster.lustVuln > 0) {
             outputText("[Themonster] slowly succumbs to [monster his] basest desires as your continous singing compels [monster him] toward increasingly lustful thoughts.");
@@ -10143,12 +10064,6 @@ public class Combat extends BaseContent {
                 player.removeStatusEffect(StatusEffects.FlameBlade);
                 outputText("<b>Flame Blade effect wore off!</b>\n\n");
             } else player.addStatusValue(StatusEffects.FlameBlade, 1, -1);
-        }
-        if (player.hasStatusEffect(StatusEffects.ElectrifyWeapon)) {
-            if (player.statusEffectv1(StatusEffects.ElectrifyWeapon) <= 0) {
-                player.removeStatusEffect(StatusEffects.ElectrifyWeapon);
-                outputText("<b>Electrify Weapon effect wore off!</b>\n\n");
-            } else player.addStatusValue(StatusEffects.ElectrifyWeapon, 1, -1);
         }
         if (player.hasStatusEffect(StatusEffects.Maleficium)) {
             if (player.statusEffectv1(StatusEffects.Maleficium) <= 0) {
