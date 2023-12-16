@@ -5,6 +5,8 @@ import classes.PerkType;
 import classes.Races;
 import classes.PerkLib;
 import classes.StatusEffects;
+import classes.IMutations.IMutationsLib;
+import classes.BodyParts.Tail;
 
 public class AbstractMagicSpecial extends AbstractSpecial {
 
@@ -119,6 +121,17 @@ public class AbstractMagicSpecial extends AbstractSpecial {
 		if (summonedElementals >= 27 && manaCost > 99 && player.hasPerk(PerkLib.StrongestElementalBondSu)) manaCost -= 90;
 		if (manaCost > 1 && player.hasPerk(PerkLib.FirstAttackElementalsSu)) manaCost *= 0.5;
 		return Math.round(manaCost);
+	}
+
+	protected function kitsuneskillCost():Number {
+		var modksc:Number = 1;
+		if (player.perkv1(IMutationsLib.KitsuneThyroidGlandIM) >= 1) modksc -= 0.5;
+		if (player.tailCount == 9 && (player.tailType == Tail.FOX || player.tailType == Tail.KITSHOO)) {
+			if (player.perkv1(IMutationsLib.KitsuneThyroidGlandIM) >= 3) modksc *= 3;
+			else if (player.perkv1(IMutationsLib.KitsuneThyroidGlandIM) >= 2) modksc *= 2;
+			else modksc += 0.5;
+		}
+		return modksc;
 	}
 }
 }

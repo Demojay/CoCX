@@ -419,6 +419,9 @@ public class CombatAbilities {
 	public static const LustStorm:LustStormSkill = new LustStormSkill();
 	public static const PlasmaBlast:PlasmaBlastSkill = new PlasmaBlastSkill();
 	public static const ElectrifyWeapon:ElectrifyWeaponSkill = new ElectrifyWeaponSkill();
+	public static const Possess:PossessSkill = new PossessSkill();
+	public static const ElectricDischarge:ElectricDischargeSkill = new ElectricDischargeSkill();
+	public static const MysticWeb:MysticWebSkill = new MysticWebSkill();
 
 	public static const ALL_MAGICAL_SPECIALS:/*CombatAbility*/Array = [
 		CursedRiddle,
@@ -427,7 +430,10 @@ public class CombatAbilities {
 		PleasureBolt,
 		LustStorm,
 		PlasmaBlast,
-		ElectrifyWeapon
+		ElectrifyWeapon,
+		Possess,
+		ElectricDischarge,
+		MysticWeb
 	]
 	.concat(ALL_ELEMENTAL_FUSION_ATTACKS);
 	

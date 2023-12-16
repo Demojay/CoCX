@@ -4,6 +4,8 @@ import classes.StatusEffectType;
 import classes.PerkType;
 import classes.Races;
 import classes.CoC;
+import classes.VaginaClass;
+import classes.Monster;
 
 public class AbstractSpecial extends CombatAbility {
     protected var knownCondition:*;
@@ -12,6 +14,7 @@ public class AbstractSpecial extends CombatAbility {
     public static var FLIGHT_ONLY:int = 1;
     public static var LAND_ONLY:int = 2;
     public var abilityAvailable:int;
+    public var manaType:int = Combat.USEMANA_NORMAL;
 
 
     public function AbstractSpecial (
@@ -53,7 +56,7 @@ public class AbstractSpecial extends CombatAbility {
         var finalWrathCost:Number = wrathCost();
 
         if (finalManaCost > 0) {
-            useMana(finalManaCost);
+            useMana(finalManaCost, manaType);
         }
 
         if (finalFatigueCost > 0) {
@@ -100,5 +103,32 @@ public class AbstractSpecial extends CombatAbility {
     protected function sfCostMod(sfCost:Number):int {
         return Math.round(sfCost * soulskillCost() * soulskillcostmulti());
     }
+
+    protected function mosterTeaseText(monster:Monster):void {
+		if (monster.cocks.length > 0) {
+			if (monster.lust >= (monster.maxLust() * 0.6)) outputText("You see [monster his] [monster cocks] dribble pre-cum.  ");
+			else if (monster.lust >= (monster.maxLust() * 0.3) && monster.cocks.length == 1) outputText("[Themonster]'s [monster cock] hardens, distracting [monster him] further.  ");
+			else if (monster.lust >= (monster.maxLust() * 0.3)) outputText("You see [monster his] [monster cocks] harden uncomfortably.  ");
+		}
+		if (monster.vaginas.length > 0) {
+			if (monster.plural) {
+				if (monster.lust >= (monster.maxLust() * 0.6)) {
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_NORMAL) outputText("[Themonster]'s [monster vag]s dampen perceptibly.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_WET) outputText("[Themonster]'s crotches become sticky with girl-lust.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLICK) outputText("[Themonster]'s [monster vag]s become sloppy and wet.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DROOLING) outputText("Thick runners of girl-lube stream down the insides of [themonster]'s thighs.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLAVERING) outputText("[Themonster]'s [monster vag]s instantly soak [monster him] groin.  ");
+				}
+			} else {
+				if (monster.lust >= (monster.maxLust() * 0.6)) {
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_NORMAL) outputText("[Themonster]'s [monster vag] dampens perceptibly.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_WET) outputText("[Themonster]'s crotch becomes sticky with girl-lust.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLICK) outputText("[Themonster]'s [monster vag] becomes sloppy and wet.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_DROOLING) outputText("Thick runners of girl-lube stream down the insides of [themonster]'s thighs.  ");
+					if (monster.vaginas[0].vaginalWetness == VaginaClass.WETNESS_SLAVERING) outputText("[Themonster]'s [monster vag] instantly soaks her groin.  ");
+				}
+			}
+		}
+	}
 }
 }

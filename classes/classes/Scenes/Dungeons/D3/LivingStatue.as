@@ -8,6 +8,8 @@ import classes.PerkLib;
 import classes.Scenes.SceneLib;
 import classes.StatusEffects;
 import classes.internals.ChainedDrop;
+import classes.Scenes.Combat.CombatAbility;
+import classes.Scenes.Combat.SpecialsMagic.PossessSkill;
 
 /**
 	 * ...
@@ -77,6 +79,15 @@ import classes.internals.ChainedDrop;
 		override protected function handleBlind():Boolean
 		{
 			return true;
+		}
+
+		override public function interceptPlayerAbility(ability:CombatAbility):Boolean {
+			if (ability is PossessSkill) {
+				outputText("There is nothing to possess inside the golem.");
+				return true;
+			}
+
+			return false;
 		}
 		
 		private function concussiveBlow():void

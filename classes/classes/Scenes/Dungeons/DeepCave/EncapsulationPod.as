@@ -6,6 +6,8 @@ import classes.BodyParts.Hips;
 import classes.BodyParts.Skin;
 import classes.Scenes.SceneLib;
 import classes.internals.*;
+import classes.Scenes.Combat.CombatAbility;
+import classes.Scenes.Combat.SpecialsMagic.MysticWebSkill;
 
 /**
 	 * ...
