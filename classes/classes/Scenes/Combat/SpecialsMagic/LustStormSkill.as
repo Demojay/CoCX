@@ -34,7 +34,7 @@ public class LustStormSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Inflicts  ~" + calcDamage(monster, false) + " lightning damage and ~" + calcLustDamage(monster) + " lust damage. Stuns." + 
+		return "Inflicts  ~" + numberFormat(calcDamage(monster, false)) + " lightning damage and ~" + numberFormat(calcLustDamage(monster)) + " lust damage. Stuns." + 
             " Creates a lingering thunderstorm which deals lightning and lust damage.";
     }
 

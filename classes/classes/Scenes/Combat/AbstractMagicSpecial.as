@@ -123,7 +123,7 @@ public class AbstractMagicSpecial extends AbstractSpecial {
 		return Math.round(manaCost);
 	}
 
-	protected function kitsuneskillCost():Number {
+	public function kitsuneskillCost():Number {
 		var modksc:Number = 1;
 		if (player.perkv1(IMutationsLib.KitsuneThyroidGlandIM) >= 1) modksc -= 0.5;
 		if (player.tailCount == 9 && (player.tailType == Tail.FOX || player.tailType == Tail.KITSHOO)) {
@@ -132,6 +132,12 @@ public class AbstractMagicSpecial extends AbstractSpecial {
 			else modksc += 0.5;
 		}
 		return modksc;
+	}
+
+	public function kitsuneskill2Cost():Number {
+		var modks2c:Number = 1;
+		if (player.perkv1(IMutationsLib.KitsuneParathyroidGlandsIM) >= 2) modks2c -= 0.5;
+		return modks2c;
 	}
 }
 }

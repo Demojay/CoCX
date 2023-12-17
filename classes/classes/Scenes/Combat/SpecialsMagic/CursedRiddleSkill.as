@@ -30,7 +30,7 @@ public class CursedRiddleSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Chance to deal  ~" + calcDamage(monster) + " magical damage, ~" + calcLustDamage(monster) + "lust damage and to stun";
+		return "Chance to deal  ~" + numberFormat(calcDamage(monster)) + " magical damage, ~" + numberFormat(calcLustDamage(monster)) + "lust damage and to stun";
     }
 
     public function calcDamage(monster:Monster):Number {

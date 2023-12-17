@@ -30,7 +30,7 @@ public class MysticWebSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Lowers enemy's speed by " + Math.abs(Math.round(calcDebuff(target))) + ". Chance of Stun";
+		return "Lowers enemy's speed by " + numberFormat(Math.abs(Math.round(calcDebuff(target)))) + ". Chance of Stun";
     }
 
     override protected function usabilityCheck():String {

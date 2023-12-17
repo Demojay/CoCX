@@ -27,7 +27,7 @@ public class SpectralScreamSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Inflicts  ~" + calcDamage(monster) + " magical damage with the chance to inflict fear";
+		return "Inflicts  ~" + numberFormat(calcDamage(monster)) + " magical damage with the chance to inflict fear";
     }
 
     public function calcDamage(monster:Monster):Number {

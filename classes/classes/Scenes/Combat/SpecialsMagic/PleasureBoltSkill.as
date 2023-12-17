@@ -29,7 +29,7 @@ public class PleasureBoltSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Inflicts  ~" + calcDamage(monster, false) + " lightning damage and ~" + calcLustDamage(monster) + " lust damage";
+		return "Inflicts  ~" + numberFormat(calcDamage(monster, false)) + " lightning damage and ~" + numberFormat(calcLustDamage(monster)) + " lust damage";
     }
 
     public function calcDamage(monster:Monster, casting:Boolean = false):Number {

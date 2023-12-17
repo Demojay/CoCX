@@ -422,6 +422,13 @@ public class CombatAbilities {
 	public static const Possess:PossessSkill = new PossessSkill();
 	public static const ElectricDischarge:ElectricDischargeSkill = new ElectricDischargeSkill();
 	public static const MysticWeb:MysticWebSkill = new MysticWebSkill();
+	public static const FoxFire:FoxFireSkill = new FoxFireSkill();
+	public static const PureFoxFire:PureFoxFireSkill = new PureFoxFireSkill();
+	public static const CorruptFoxFire:CorruptFoxFireSkill = new CorruptFoxFireSkill();
+	public static const FusedFoxFire:FusedFoxFireSkill = new FusedFoxFireSkill();
+	public static const Illusion:IllusionSkill = new IllusionSkill();
+	public static const Terror:TerrorSkill = new TerrorSkill();
+	public static const FoxflamePelt:FoxflamePeltSkill = new FoxflamePeltSkill();
 
 	public static const ALL_MAGICAL_SPECIALS:/*CombatAbility*/Array = [
 		CursedRiddle,
@@ -433,7 +440,14 @@ public class CombatAbilities {
 		ElectrifyWeapon,
 		Possess,
 		ElectricDischarge,
-		MysticWeb
+		MysticWeb,
+		FoxFire,
+		PureFoxFire,
+		CorruptFoxFire,
+		FusedFoxFire,
+		Illusion,
+		Terror,
+		FoxflamePelt
 	]
 	.concat(ALL_ELEMENTAL_FUSION_ATTACKS);
 	

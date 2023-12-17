@@ -31,7 +31,7 @@ public class ElectricDischargeSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Inflicts  ~" + calcDamage(target, false) + " lightning damage";
+		return "Inflicts  ~" + numberFormat(calcDamage(target, false)) + " lightning damage";
     }
 
     public function calcDamage(monster:Monster, casting:Boolean = false):Number {

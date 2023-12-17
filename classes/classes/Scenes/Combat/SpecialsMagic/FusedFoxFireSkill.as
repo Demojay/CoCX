@@ -9,24 +9,24 @@ import classes.IMutations.IMutationsLib;
 import classes.BodyParts.Tail;
 import classes.GlobalFlags.kFLAGS;
 
-public class FoxFireSkill extends AbstractMagicSpecial {
-    public function FoxFireSkill() {
+public class FusedFoxFireSkill extends AbstractMagicSpecial {
+    public function FusedFoxFireSkill() {
         super (
-            "Fox Fire",
-            "Unleash fox flame at your opponent for high damage.",
+            "Fused Fox Fire",
+            "Unleash fused ethereal blue and corrupted purple flame at your opponent for high damage.",
             TARGET_ENEMY,
             TIMING_INSTANT,
             [TAG_FIRE, TAG_MAGICAL, TAG_DAMAGING, TAG_LUSTDMG],
-            null
+            PerkLib.NinetailsKitsuneOfBalance
         )
         lastAttackType = Combat.LAST_ATTACK_SPELL;
-        baseManaCost = 60;
-        baseSFCost = 30;
+        baseManaCost = 200;
+        baseSFCost = 100;
         manaType = Combat.USEMANA_MAGIC_NOBM;
     }
 
     override public function get isKnown():Boolean {
-        return ((player.tailType == Tail.FOX && player.tailCount >= 2 && player.tailCount < 7) || (player.tailType == Tail.KITSHOO && player.tailCount >= 2)) && !player.hasPerk(PerkLib.ElementalBody);
+        return super.isKnown && player.tailType == Tail.FOX && player.tailCount >= 7 && !player.hasPerk(PerkLib.ElementalBody);
     }
 
     override public function describeEffectVs(target:Monster):String {
@@ -45,55 +45,51 @@ public class FoxFireSkill extends AbstractMagicSpecial {
     }
 
     override public function manaCost():Number {
-        if (!player.statStore.hasBuff("FoxflamePelt")) {
-            return spellCost(baseManaCost * kitsuneskillCost());
-        } else {
-            return 0;
-        }
+        return spellCost(baseManaCost * kitsuneskillCost());
     }
 
     override public function sfCost():int {
-        if (!player.statStore.hasBuff("FoxflamePelt")) {
-            return baseSFCost * soulskillCost() * soulskillcostmulti();
-        } else {
-            return 0;
-        }
+        return baseSFCost * soulskillCost() * soulskillcostmulti();
     }
 
     public function calcDamage(monster:Monster, casting:Boolean = false):Number {
-        var damage:Number = (scalingBonusWisdom() * 0.5) + (scalingBonusIntelligence() * 0.3);
+        var damage:Number = (scalingBonusWisdom() * 1.5) + scalingBonusIntelligence();
         damage = calcInfernoMod(damage, casting);
-		damage *= 0.25;
+		damage *= 0.5;
+        if (player.tailType == Tail.FOX && player.tailCount == 9) damage *= 2;
 
-        var basicfoxfiredmgmulti:Number = 1;
-		basicfoxfiredmgmulti += spellMod() - 1;
-		basicfoxfiredmgmulti += soulskillMagicalMod() - 1;
-		if (player.shieldName == "spirit focus") basicfoxfiredmgmulti += .2;
-		if (player.armorName == "white kimono" || player.armorName == "red kimono" || player.armorName == "blue kimono" || player.armorName == "purple kimono" || player.armorName == "black kimono") basicfoxfiredmgmulti += .2;
-		if (player.headjewelryName == "fox hairpin") basicfoxfiredmgmulti += .2;
-		if (player.hasPerk(PerkLib.TamamoNoMaeCursedKimono)) basicfoxfiredmgmulti += .5;
-		if (player.hasPerk(PerkLib.InariBlessedKimono)) basicfoxfiredmgmulti += 1.5;
-		if (player.hasPerk(PerkLib.StarSphereMastery)) basicfoxfiredmgmulti += player.perkv1(PerkLib.StarSphereMastery) * 0.05;
-		if (player.hasPerk(PerkLib.NinetailsKitsuneOfBalance)) basicfoxfiredmgmulti += .5;
-		//Hosohi No Tama and bonus damage
-		if (player.perkv1(IMutationsLib.KitsuneThyroidGlandIM) >= 2) basicfoxfiredmgmulti += 1;
-		damage *= basicfoxfiredmgmulti;
+        var fusedfoxfiredmgmulti:Number = 1;
+		fusedfoxfiredmgmulti += spellMod() - 1;
+		fusedfoxfiredmgmulti += soulskillMagicalMod() - 1;
+		if (player.shieldName == "spirit focus") fusedfoxfiredmgmulti += .2;
+		if (player.armorName == "white kimono" || player.armorName == "red kimono" || player.armorName == "blue kimono" || player.armorName == "purple kimono" || player.armorName == "black kimono") fusedfoxfiredmgmulti += .2;
+		if (player.headjewelryName == "fox hairpin") fusedfoxfiredmgmulti += .2;
+		if (player.hasPerk(PerkLib.TamamoNoMaeCursedKimono)) fusedfoxfiredmgmulti += .5;
+		if (player.hasPerk(PerkLib.InariBlessedKimono)) fusedfoxfiredmgmulti += 1.5;
+		if (player.hasPerk(PerkLib.StarSphereMastery)) fusedfoxfiredmgmulti += player.perkv1(PerkLib.StarSphereMastery) * 0.05;
+		if (player.hasPerk(PerkLib.NinetailsKitsuneOfBalance)) fusedfoxfiredmgmulti += .5;
+		//Hosohi No Tama and Fusion bonus damage
+		if (player.perkv1(IMutationsLib.KitsuneThyroidGlandIM) >= 2 && player.tailType == Tail.FOX && player.tailCount == 9) fusedfoxfiredmgmulti += 1;
+		damage *= fusedfoxfiredmgmulti;
+        damage*= 2;
 		
         //High damage to goes.
 		if(monster && monster.short == "goo-girl") damage = Math.round(damage * 1.5);
         damage *= 4;
         if (player.hasPerk(PerkLib.RacialParagon)) damage *= combat.RacialParagonAbilityBoost();
-		if (player.hasPerk(PerkLib.NaturalArsenal)) damage *= 1.50;
+		if (player.hasPerk(PerkLib.NaturalArsenal)) damage *= 1.5;
 		if (player.hasPerk(PerkLib.LionHeart)) damage *= 2;
         damage *= combat.fireDamageBoostedByDao();
         return damage;
     }
 
     public function calcLustDamage(monster:Monster):Number {
-        var lustDmg:Number = ((scalingBonusIntelligence(false) / 12 + scalingBonusWisdom(false) / 8) * ((spellMod() + soulskillMagicalMod()) / 2));
+        var lustDmg:Number = ((scalingBonusIntelligence(false) / 11 + scalingBonusWisdom(false) / 7) * ((spellMod() + soulskillMagicalMod()) / 2));
         if (monster) lustDmg += rand(monster.lib + monster.cor) / 5;
         if (player.hasPerk(PerkLib.EromancyExpert)) lustDmg *= 1.5;
-        if (player.shieldName == "spirit focus") lustDmg *= 1.2;
+        if (player.tailType == Tail.FOX && player.tailCount == 9) lustDmg *= 2.8;
+		if (player.perkv1(IMutationsLib.KitsuneThyroidGlandIM) >= 2 && player.tailType == Tail.FOX && player.tailCount == 9) lustDmg *= 1.5;
+		if (player.shieldName == "spirit focus") lustDmg *= 1.2;
 		if (player.headjewelryName == "fox hairpin") lustDmg *= 1.2;
 		if (player.hasPerk(PerkLib.TamamoNoMaeCursedKimono)) lustDmg *= 2.5;
 		if (player.hasPerk(PerkLib.InariBlessedKimono)) lustDmg *= 1.5;
@@ -115,8 +111,9 @@ public class FoxFireSkill extends AbstractMagicSpecial {
 			return;
 		}
         if (display)
-            outputText("Holding out your palm, you conjure a ball of fox flame that dances across your fingertips." + 
-                "  You launch it at [themonster] with a ferocious throw, and it bursts on impact, showering dazzling sparks everywhere. ");
+            outputText("Holding out your palms, you conjure a ethereal blue flame on one palm, and a corrupted purple flame on the other, dancing across your fingertips." + 
+                "  After a well-practised process of fusing both into a giant multi-colored ball of fire, you launch it at [themonster] with a ferocious throw." + 
+                " It bursts on impact, showering dazzling azure and lavender sparks everywhere. ");
         
         var damage:Number = calcDamage(monster, true);
         var lustDmg:Number = calcLustDamage(monster);
@@ -141,7 +138,7 @@ public class FoxFireSkill extends AbstractMagicSpecial {
         
         if (display) {
             if (monster.lustVuln == 0) {
-                outputText("It has no effect!  Your foe clearly does not experience lust in the same way as you. ");
+                outputText("It has no effect!  Your foe clearly does not experience lust in the same way as you.");
             }
             else if (monster.lust < (monster.maxLust() * 0.3)) outputText("[Themonster] squirms as the magic affects [monster him]. ");
             else if (monster.lust >= (monster.maxLust() * 0.3) && monster.lust < (monster.maxLust() * 0.6)) {

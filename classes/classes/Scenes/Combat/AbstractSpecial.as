@@ -15,6 +15,7 @@ public class AbstractSpecial extends CombatAbility {
     public static var LAND_ONLY:int = 2;
     public var abilityAvailable:int;
     public var manaType:int = Combat.USEMANA_NORMAL;
+    public var fatigueType:int = Combat.USEMANA_NORMAL;
 
 
     public function AbstractSpecial (
@@ -60,7 +61,7 @@ public class AbstractSpecial extends CombatAbility {
         }
 
         if (finalFatigueCost > 0) {
-            fatigue(finalFatigueCost);
+            fatigue(finalFatigueCost, fatigueType);
         }
 
         if (finalSFCost > 0) {

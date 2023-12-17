@@ -33,7 +33,7 @@ public class OrgasmicLightningStrikeSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Inflicts  ~" + calcDamage(monster, false) + " lust damage";
+		return "Inflicts  ~" + numberFormat(calcDamage(monster, false)) + " lust damage";
     }
 
     public function calcDamage(monster:Monster, casting:Boolean = false):Number {

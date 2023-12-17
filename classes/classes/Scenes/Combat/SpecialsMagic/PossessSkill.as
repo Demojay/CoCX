@@ -25,7 +25,7 @@ public class PossessSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Inflicts  ~" + calcLustDamage(target) + " lust damage";
+		return "Inflicts  ~" + numberFormat(calcLustDamage(target)) + " lust damage";
     }
 
     override public function calcCooldown():int {

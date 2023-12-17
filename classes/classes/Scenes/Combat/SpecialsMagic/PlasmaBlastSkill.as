@@ -44,7 +44,7 @@ public class PlasmaBlastSkill extends AbstractMagicSpecial {
     }
 
     override public function describeEffectVs(target:Monster):String {
-		return "Inflicts  ~" + calcDamage(monster) + " lightning damage and ~" + calcLustDamage(monster) + " lust damage. Stuns";
+		return "Inflicts  ~" + numberFormat(calcDamage(monster)) + " lightning damage and ~" + numberFormat(calcLustDamage(monster)) + " lust damage. Stuns";
     }
 
     override protected function usabilityCheck():String {
