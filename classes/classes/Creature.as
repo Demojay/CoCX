@@ -4566,6 +4566,41 @@ public class Creature extends Utils
 		public function get vagorass():IOrifice {
 			return hasVagina() ? vaginas[0] : ass;
 		}
+
+		public function eyesOfTheHunterDamageBonus():Number {
+			var eothBonus:Number = 1;
+			var player:Player = CoC.instance.player;
+
+			if (player.eyesOfTheHunterAdeptBoost()) {
+				if (hasPerk(PerkLib.EyesOfTheHunterAdept) && sens >= 50) eothBonus += 0.1;
+				if (hasPerk(PerkLib.EyesOfTheHunterSu) && sens >= 30) {
+					if (sens >= 500) eothBonus += 1.9;
+					else eothBonus += 0.02 * Math.round((sens - 25) / 5);
+				}
+			}
+			if (player.eyesOfTheHunterExpertBoost()) {
+				if (hasPerk(PerkLib.EyesOfTheHunterExpert) && sens >= 75) eothBonus += 0.1;
+				if (hasPerk(PerkLib.EyesOfTheHunterSu) && sens >= 30) {
+					if (sens >= 500) eothBonus += 1.9;
+					else eothBonus += 0.02 * Math.round((sens - 25) / 5);
+				}
+			}
+			if (player.eyesOfTheHunterMasterBoost()) {
+				if (hasPerk(PerkLib.EyesOfTheHunterMaster) && sens >= 100) eothBonus += 0.1;
+				if (hasPerk(PerkLib.EyesOfTheHunterSu) && sens >= 30) {
+					if (sens >= 500) eothBonus += 1.9;
+					else eothBonus += 0.02 * Math.round((sens - 25) / 5);
+				}
+			}
+			if (player.eyesOfTheHunterGrandMasterBoost()) {
+				if (hasPerk(PerkLib.EyesOfTheHunterGrandMaster) && sens >= 125) eothBonus += 0.1;
+				if (hasPerk(PerkLib.EyesOfTheHunterSu) && sens >= 30) {
+					if (sens >= 500) eothBonus += 1.9;
+					else eothBonus += 0.02 * Math.round((sens - 25) / 5);
+				}
+			}
+			return eothBonus;
+		}
 		
 		/**
 		 * Generate increments for stats

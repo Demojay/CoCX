@@ -8120,39 +8120,6 @@ public class Combat extends BaseContent {
         return monsterLvlAdjustment;
     }
 
-	private function EyesOfTheHunterDamageBonus():Number {
-		var EOTHDBonus:Number = 1;
-		if (player.eyesOfTheHunterAdeptBoost()) {
-			if (player.hasPerk(PerkLib.EyesOfTheHunterAdept) && player.sens >= 50) EOTHDBonus += 0.1;
-			if (player.hasPerk(PerkLib.EyesOfTheHunterSu) && player.sens >= 30) {
-				if (player.sens >= 500) EOTHDBonus += 1.9;
-				else EOTHDBonus += 0.02 * Math.round((player.sens - 25) / 5);
-			}
-		}
-		if (player.eyesOfTheHunterExpertBoost()) {
-			if (player.hasPerk(PerkLib.EyesOfTheHunterExpert) && player.sens >= 75) EOTHDBonus += 0.1;
-			if (player.hasPerk(PerkLib.EyesOfTheHunterSu) && player.sens >= 30) {
-				if (player.sens >= 500) EOTHDBonus += 1.9;
-				else EOTHDBonus += 0.02 * Math.round((player.sens - 25) / 5);
-			}
-		}
-		if (player.eyesOfTheHunterMasterBoost()) {
-			if (player.hasPerk(PerkLib.EyesOfTheHunterMaster) && player.sens >= 100) EOTHDBonus += 0.1;
-			if (player.hasPerk(PerkLib.EyesOfTheHunterSu) && player.sens >= 30) {
-				if (player.sens >= 500) EOTHDBonus += 1.9;
-				else EOTHDBonus += 0.02 * Math.round((player.sens - 25) / 5);
-			}
-		}
-		if (player.eyesOfTheHunterGrandMasterBoost()) {
-			if (player.hasPerk(PerkLib.EyesOfTheHunterGrandMaster) && player.sens >= 125) EOTHDBonus += 0.1;
-			if (player.hasPerk(PerkLib.EyesOfTheHunterSu) && player.sens >= 30) {
-				if (player.sens >= 500) EOTHDBonus += 1.9;
-				else EOTHDBonus += 0.02 * Math.round((player.sens - 25) / 5);
-			}
-		}
-		return EOTHDBonus;
-	}
-
     //DEAL DAMAGE
     public function doTrueDamage(damage:Number, apply:Boolean = true, display:Boolean = false):Number {
         MDOCount++; // for multipile attacks to prevent stupid repeating of damage messages
@@ -8191,7 +8158,7 @@ public class Combat extends BaseContent {
 			if (player.perkv1(IMutationsLib.RatatoskrSmartsIM) >= 3) damage *= (1 + (Math.round(camp.codex.checkUnlocked() / 100) * 3));
 			else damage *= (1 + Math.round(camp.codex.checkUnlocked() / 100));
 		}
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             /* No monsters use this perk, so it's been removed for now
@@ -8268,7 +8235,7 @@ public class Combat extends BaseContent {
 			else damage *= (1 + Math.round(camp.codex.checkUnlocked() / 100));
 		}
 		if (player.hasPerk(PerkLib.SharedPower) && player.perkv1(PerkLib.SharedPower) > 0) damage *= (1+(0.1*player.perkv1(PerkLib.SharedPower)));
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
 		if (monster.hasPerk(PerkLib.EnemyGhostType)) damage = 0;
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
@@ -8375,7 +8342,7 @@ public class Combat extends BaseContent {
         if (monster.hasStatusEffect(StatusEffects.AcidDoT)) damage *= (1 + (0.3 * monster.statusEffectv3(StatusEffects.AcidDoT)));
 		if (monster.hasStatusEffect(StatusEffects.Provoke)) damage *= monster.statusEffectv2(StatusEffects.Provoke);
         if (monster.hasPerk(PerkLib.TrollResistance)) damage *= 0.85;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             doNext(endHpVictory);
@@ -8458,7 +8425,7 @@ public class Combat extends BaseContent {
         if (player.hasPerk(PerkLib.IceQueenGown)) damage = damage / 100;
         if (player.hasPerk(PerkLib.InfernalRage)) damage *= (1 + (player.wrath100 * 0.01));
         if (player.shieldName == "Nekonomicon") damage *= 2;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             /* No monsters use this perk, so it's been removed for now
@@ -8520,7 +8487,7 @@ public class Combat extends BaseContent {
         if (player.hasStatusEffect(StatusEffects.YukiOnnaKimono)) damage *= 1.4;
         if (player.hasPerk(PerkLib.IceQueenGown)) damage *= 2;
         if (player.hasPerk(PerkLib.WalpurgisIzaliaRobe)) damage = damage / 100;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             doNext(endHpVictory);
@@ -8573,7 +8540,7 @@ public class Combat extends BaseContent {
         if (player.perkv1(IMutationsLib.HeartOfTheStormIM) >= 3) damage *= 1.3;
         if (player.hasPerk(PerkLib.IceQueenGown)) damage *= 2;
         if (player.hasPerk(PerkLib.WalpurgisIzaliaRobe)) damage = damage / 100;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             /* No monsters use this perk, so it's been removed for now
@@ -8623,7 +8590,7 @@ public class Combat extends BaseContent {
         if (player.hasPerk(PerkLib.VladimirRegalia)) damage *= 2;
         if (player.hasPerk(PerkLib.IceQueenGown)) damage = damage / 100;
         if (player.shieldName == "Nekonomicon") damage *= 2;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             doNext(endHpVictory);
@@ -8664,7 +8631,7 @@ public class Combat extends BaseContent {
 		if (!ignoreDR) damage *= (monster.damageMagicalPercent() / 100);
         damage = poisonTypeDamageBonus(damage);
         if (monster.hasPerk(PerkLib.TrollResistance)) damage *= 0.85;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             /* No monsters use this perk, so it's been removed for now
@@ -8709,7 +8676,7 @@ public class Combat extends BaseContent {
 		if (!ignoreDR) damage *= (monster.damageMagicalPercent() / 100);
         damage = windTypeDamageBonus(damage);
         if (monster.hasPerk(PerkLib.TrollResistance)) damage *= 0.85;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             doNext(endHpVictory);
@@ -8750,7 +8717,7 @@ public class Combat extends BaseContent {
 		if (!ignoreDR) damage *= (monster.damageMagicalPercent() / 100);
         damage = waterTypeDamageBonus(damage);
         if (monster.hasPerk(PerkLib.TrollResistance)) damage *= 0.85;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             /* No monsters use this perk, so it's been removed for now
@@ -8795,7 +8762,7 @@ public class Combat extends BaseContent {
 		if (!ignoreDR) damage *= (monster.damageMagicalPercent() / 100);
         damage = earthTypeDamageBonus(damage);
         if (monster.hasPerk(PerkLib.TrollResistance)) damage *= 0.85;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             doNext(endHpVictory);
@@ -8836,7 +8803,7 @@ public class Combat extends BaseContent {
 		if (!ignoreDR) damage *= (monster.damageMagicalPercent() / 100);
         damage = acidTypeDamageBonus(damage);
 		if (monster.hasPerk(PerkLib.TrollResistance)) damage *= 0.85;
-		damage *= EyesOfTheHunterDamageBonus();
+		damage *= player.eyesOfTheHunterDamageBonus();
         if (damage == 0) MSGControllForEvasion = true;
         if (monster.HP - damage <= monster.minHP()) {
             doNext(endHpVictory);
