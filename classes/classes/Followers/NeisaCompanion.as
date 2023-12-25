@@ -11,6 +11,8 @@ import classes.Appearance;
 import classes.BodyParts.Hips;
 import classes.BodyParts.Butt;
 import classes.StatusEffectType;
+import classes.Monster;
+import classes.CoC;
 
 public class NeisaCompanion extends Follower implements SaveableState{
     
@@ -100,7 +102,7 @@ public class NeisaCompanion extends Follower implements SaveableState{
     }
 
     override public function setStats():void {
-        var mod:int = (level - 1);
+        var mod:int = (followerLevel - 1);
         initStrTouSpeInte(50 + 15*mod, 80 + 22*mod, 50 + 10*mod, 44 + 8*mod);
         initWisLibSensCor(44 + 8*mod, 52 + 6*mod, 25 + 5*mod, 50);
         this.weaponAttack = 12 + 3*mod;
@@ -183,20 +185,20 @@ public class NeisaCompanion extends Follower implements SaveableState{
             
         abilities.push(
             { call: basicAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, weight: weights[0] },
-            { call: defendPlayer, type: ABILITY_SPECIAL, range: RANGE_SELF, weight: weights[1] },
-            { call: stunAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, weight: weights[2] },
-            { call: powerStunAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, weight: weights[3] }
+            { call: defendPlayer, type: ABILITY_SPECIAL, range: RANGE_SELF, condition: defendCondition, weight: weights[1] },
+            { call: stunAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, condition: stunCondition, weight: weights[2] },
+            { call: powerStunAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, condition: stunCondition, weight: weights[3] }
         );
 
         return abilities;
     }
 
-    override public function readyAction():void {
-        outputText("Neisa steps forward, shield at the ready in order to defend you.\n\n");
-        super.readyAction();
+    override public function readyAction(monster:Monster, display:Boolean = true):void {
+        if (display) outputText("Neisa steps forward, shield at the ready in order to defend you.\n\n");
+        super.readyAction(monster, display);
     }
 
-    override public function standBy(display:Boolean = true):void {
+    override public function standBy(monster:Monster, display:Boolean = true):void {
 			if (display) outputText("Neisa looks for an opening in the battle.\n\n");
     }
 
@@ -210,24 +212,34 @@ public class NeisaCompanion extends Follower implements SaveableState{
         }
     }
 
-    public function basicAttack(display:Boolean = true):void {
-        var dmg1:Number = player.statusEffectv1(StatusEffects.CombatFollowerNeisa);
-        var weaponNeisa:Number = player.statusEffectv2(StatusEffects.CombatFollowerNeisa);
+    public function basicAttack(monster:Monster, display:Boolean = true):void {
+        var dmg1:Number = this.str;
+        var weaponNeisa:Number = this.weaponAttack;
 
-        dmg1 += functions.scalingBonusStrengthFollower() * 0.5;
-        dmg1 = Math.round(dmg1 * functions.increasedEfficiencyOfAttacks());
+        dmg1 += eBaseStrengthDamage();
+        dmg1 = functions.scalingWeapon(weaponNeisa, dmg1);
+        dmg1 *= functions.increasedEfficiencyOfAttacks();
+        dmg1 = functions.taticianBonus(dmg1);
 
         if (display) outputText("Neisa slashes at [themonster] with her sword. ");
         functions.doDamageFollower(this, dmg1, true, display);
         if (display) outputText("\n\n");
     }
 
-    public function defendPlayer(display:Boolean = true):void {
+    private function defendCondition():Boolean {
+        return !player.hasStatusEffect(StatusEffects.CompBoostingPCArmorValue);
+    }
+
+    public function defendPlayer(monster:Monster, display:Boolean = true):void {
         if (display) outputText("Neisa moves in front of you, deflecting the opponent’s attacks with her shield in order to assist your own defence.\n\n");
         player.createStatusEffect(StatusEffects.CompBoostingPCArmorValue, 0, 0, 0, 0);
     }
 
-    public function stunAttack(display:Boolean = true):void {
+    private function stunCondition():Boolean {
+        return !CoC.instance.monster.hasStatusEffect(StatusEffects.Stunned);
+    }
+
+    public function stunAttack(monster:Monster, display:Boolean = true):void {
         if (display) outputText("Neisa smashes her shield on [themonster]’s head, ");
         if (!monster.hasPerk(PerkLib.Resolute)) {
             monster.createStatusEffect(StatusEffects.Stunned, 1, 0, 0, 0);
@@ -237,7 +249,7 @@ public class NeisaCompanion extends Follower implements SaveableState{
         }
     }
 
-    public function powerStunAttack(display:Boolean = true):void {
+    public function powerStunAttack(monster:Monster, display:Boolean = true):void {
         if (display) outputText("Neisa viciously rams her shield on [themonster], ");
         if (!monster.hasPerk(PerkLib.Resolute)) {
             monster.createStatusEffect(StatusEffects.Stunned, 2, 0, 0, 0);
@@ -256,32 +268,5 @@ public class NeisaCompanion extends Follower implements SaveableState{
             return [4, 3, 2, 1];
         }
     }
-
-    /**
-     * var choice1:Number = rand(20);
-				if (player.hasPerk(PerkLib.MotivationEx)) {
-					if (rand(100) == 0) neisaCombatActions0();
-					else {
-						if (choice1 < 5) neisaCombatActions1();
-						if (choice1 >= 5 && choice1 < 10) neisaCombatActions2();
-						if (choice1 >= 10 && choice1 < 15) neisaCombatActions3();
-						if (choice1 >= 15) neisaCombatActions4();
-					}
-				}
-				else if (player.hasPerk(PerkLib.Motivation)) {
-					if (choice1 < 4) neisaCombatActions0();
-					if (choice1 >= 4 && choice1 < 11) neisaCombatActions1();
-					if (choice1 >= 11 && choice1 < 16) neisaCombatActions2();
-					if (choice1 >= 16 && choice1 < 19) neisaCombatActions3();
-					if (choice1 == 19) neisaCombatActions4();
-				}
-				else {
-					if (choice1 < 10) neisaCombatActions0();
-					if (choice1 >= 10 && choice1 < 14) neisaCombatActions1();
-					if (choice1 >= 14 && choice1 < 17) neisaCombatActions2();
-					if (choice1 == 17 || choice1 == 18) neisaCombatActions3();
-					if (choice1 == 19) neisaCombatActions4();
-				}
-     */
 }
 }

@@ -13,7 +13,6 @@ import classes.GlobalFlags.kFLAGS;
 public class FollowerFunctions extends BaseCombatContent{
 
     public function FollowerFunctions() {}
-    public var monster:Monster = super.monster;
 
     public function increasedEfficiencyOfAttacks():Number {
         var IEoA:Number = 0;
@@ -32,6 +31,11 @@ public class FollowerFunctions extends BaseCombatContent{
         return IEoA;
     }
 
+    public function taticianBonus(damage:Number):Number {
+        if (player.hasPerk(PerkLib.HistoryTactician) || player.hasPerk(PerkLib.PastLifeTactician)) damage *= combat.historyTacticianBonus();
+        return damage;
+    }
+
     public function scalingWeapon(weaponAtk:Number, dmg:Number = -1):Number {
         if (dmg == -1)
             dmg = weaponAtk;
@@ -43,10 +47,6 @@ public class FollowerFunctions extends BaseCombatContent{
         else dmg *= (5.5 + ((weaponAtk - 200) * 0.01));
 
         return dmg;
-    }
-
-    public function scalingBonusStrengthFollower(randomize:Boolean = true):Number {
-        return combat.scalingBonusStrengthCompanion(randomize);
     }
 
     public function doDamageFollower(follower:Follower, damage:Number, apply:Boolean = true, display:Boolean = false, ignoreDR:Boolean = false):Number {

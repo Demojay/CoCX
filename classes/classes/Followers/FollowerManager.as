@@ -56,25 +56,29 @@ public class FollowerManager extends BaseContent implements SaveableState {
     public static var FOLLOWER_ZENJI:String = "Zenji";
 
     private var _follower0Name:String = "";
-    private var _follower1Name:String = "";
+    private var _follower1Name:String = FOLLOWER_NEISA;
     private var _follower2Name:String = "";
     private var _follower3Name:String = "";
 
-    private var followerAttacked:Array = [0,0,0,0];
+    private var followerAttacked:Array = [];
 
-    private var followers:Object = {
-        FOLLOWER_NEISA: new NeisaCompanion()
+    private var neisaCompanion:Follower = new NeisaCompanion();
+
+    public var followers:Object = {
+        "Neisa": neisaCompanion
     }
 
     public function FollowerManager() {
-        Saves.registerSaveableState(this);
+        //Saves.registerSaveableState(this);
+        followerAttacked = [0,0,0,0];
     }
 
-    public function follower(position:int):Follower {
+    public function getFollower(position:int):Follower {
         if (position < 0 || position > 3) {
             throw new Error("Invalid follower position entered");
         } else {
-            return followers[getFollowerName(position)];
+            var followerName:String = getFollowerName(position);
+            return followers[followerName];
         }
     }
 
@@ -126,21 +130,47 @@ public class FollowerManager extends BaseContent implements SaveableState {
         else return -1;
     }
 
+    public function prepareForCombat():void {
+        for(var pos:int = 0; pos < 4; pos++) {
+            if (getFollowerName(pos))
+                getFollower(pos).clearStatuses();
+        }
+    }
+
     public function performAttack(position:int, display:Boolean = true):Boolean {
-        if (!CoC.instance.inCombat)
+        if (!CoC.instance.inCombat) {
             trace("Perform Attack function called when outside of combat")
             return false;
+        }
 
-        if (position < 0 || position > 3)
+        if (position < 0 || position > 3) {
             trace("Invalid follower position given to performAttack function");
             return false;
-        
-        if (!getFollowerName(position))
+        }
+
+        if (!getFollowerName(position)) {
             trace("Perform Attack called on empty position")
             return false;
+        }
 
-        follower(position).performCompanionAction(display);
+        var followerToAttack:Follower = getFollower(position);
+        followerToAttack.performCompanionAction(display);
+        followerAttacked[position] = 1;
         return true;
+    }
+
+    public function canAttack(position:int):Boolean {
+        if (!CoC.instance.inCombat) {
+            trace("Can Attack function called when outside of combat")
+            return false;
+        }
+
+        if (position < 0 || position > 3) {
+            trace("Invalid follower position given to canAttack function");
+            return false;
+        }
+        
+        return getFollowerName(position) && followerAttacked[position] == 0;
     }
 
     

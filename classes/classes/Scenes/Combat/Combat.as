@@ -5,6 +5,7 @@ import classes.CoC;
 import classes.CoC_Settings;
 import classes.CockTypesEnum;
 import classes.EngineCore;
+import classes.Followers.*;
 import classes.GlobalFlags.kACHIEVEMENTS;
 import classes.GlobalFlags.kFLAGS;
 import classes.IMutations.*;
@@ -70,6 +71,7 @@ public class Combat extends BaseContent {
     public var magic:CombatMagic = new CombatMagic();
     public var teases:CombatTeases = new CombatTeases();
     public var comfoll:CombatFollowersActions = new CombatFollowersActions();
+    public var followers:FollowerManager        = new FollowerManager();
     public var ui:CombatUI = new CombatUI();
 	public var meleeDamageNoLag:Number = 0;
     public var MDOCount:int = 0; // count of how many times damage was deal
@@ -768,6 +770,7 @@ public class Combat extends BaseContent {
             flags[kFLAGS.IN_COMBAT_PLAYER_EPIC_ELEMENTAL_ATTACKED] = 0;
 			flags[kFLAGS.IN_COMBAT_PLAYER_MUMMY_ATTACKED] = 0;
 			flags[kFLAGS.IN_COMBAT_PLAYER_ANUBI_HEART_LEECH] = 0;
+            followers.resetFollowerAttacks();
 			if (player.hasPerk(PerkLib.FirstAttackSkeletons)) flags[kFLAGS.IN_COMBAT_PLAYER_SKELETONS_ATTACKED] = 0;
 			if (player.hasPerk(PerkLib.MyBloodForBloodPuppies)) flags[kFLAGS.IN_COMBAT_PLAYER_BLOOD_PUPPIES_ATTACKED] = 0;
 			if (player.perkv1(IMutationsLib.SharkOlfactorySystemIM) >= 4) flags[kFLAGS.IN_COMBAT_PLAYER_USED_SHARK_BITE] = 0;
@@ -1476,6 +1479,9 @@ public class Combat extends BaseContent {
             ui.doMummyTurn();
         if (ui.isFlyingSwordTurn())
             ui.doFlyingSwordTurn();
+        for (var c1:int = 0; c1 <= 3; c1++)
+            if (followers.canAttack(c1)) 
+                followers.performAttack(c1);
         for (var ci:int = 0; ci <= 3; ++ci)
             if (ui.isCompanionTurn(ci))
                 ui.doCompanionTurn(ci, false);
@@ -11698,6 +11704,7 @@ public class Combat extends BaseContent {
             player.createStatusEffect(StatusEffects.SoulDrill1, 0, 0, 0, 0);
         }
 		if (player.statStore.hasBuff("Turqouise Holy Band")) player.createStatusEffect(StatusEffects.TurquoiseBandProtection, 0, 0, 0, 0);
+        followers.prepareForCombat();
 	}
 
     public function display():void {

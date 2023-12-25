@@ -1,6 +1,7 @@
 package classes.Followers {
 import classes.Monster;
 import classes.PerkLib;
+import classes.CoC;
 
 public class Follower extends Monster {
 
@@ -15,9 +16,7 @@ public class Follower extends Monster {
     public function setPerks():void { }
 
     public function setInitialPerks():void { }
-
-    public function clearStatuses():void { }
-
+    
     public function prepareActions():Array { 
         var abilities:Array = [];
 
@@ -37,9 +36,9 @@ public class Follower extends Monster {
         return abilities; 
     }
 
-    public function readyAction():void { ready = true; }
+    public function readyAction(monster:Monster, display:Boolean = true):void { ready = true; }
 
-    public function standBy(display:Boolean = true):void { }
+    public function standBy(monster:Monster, display:Boolean = true):void { }
 
     public function standByWeight():int { return 0; }
 
@@ -56,19 +55,27 @@ public class Follower extends Monster {
 
      public function performCompanionAction(display:Boolean = true):void {
         var abilities:Array = prepareActions();
+        var monster:Monster = CoC.instance.monster;
+        var attacks:int = (player.hasPerk(PerkLib.MotivationSu))? 2: 1;
 
-        if (ready && player.hasPerk(PerkLib.MotivationEx) && rand(100) == 0) {
-            standBy(display);
-        } else {
-            var roll:Object = pickRandomAbility(abilities, functions.monster);
-            if (!roll) {
-                if (display) standBy(display);
-                return;
+        for(var index:int = 0; index < attacks; index++)
+        {
+            if (ready && player.hasPerk(PerkLib.MotivationEx) && rand(100) == 0) {
+                standBy(monster, display);
+            } else {
+                var roll:Object = pickRandomAbility(abilities, monster);
+                if (!roll) {
+                    if (display) standBy(monster, display);
+                    return;
+                }
+                roll.call(monster, display);
             }
-            roll.call(display);
         }
+        monster.postCompanionAction();
+    }
 
-        
+    public function clearStatuses():void {
+        ready = false;
     }
 
 
