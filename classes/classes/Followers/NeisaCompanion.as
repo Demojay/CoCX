@@ -15,15 +15,12 @@ import classes.Monster;
 import classes.CoC;
 
 public class NeisaCompanion extends Follower implements SaveableState{
-    
-    protected var followerLevel:int;
-    protected var defeats:int;
-    protected var timerStatusEffect:StatusEffectType = StatusEffects.CampSparingNpcsTimers4;
-    protected var timerStatusPosition:int = 4;
 
     public function NeisaCompanion() { 
         Saves.registerSaveableState(this);
         levelCap = 11;
+        timerStatusEffect = StatusEffects.CampSparingNpcsTimers4;
+        timerStatusPosition = 4;
     }
 
     public function resetState():void {
@@ -164,21 +161,6 @@ public class NeisaCompanion extends Follower implements SaveableState{
         }
     }
 
-    public function levelUpCheck():void {
-        if (defeats >= 1) defeats++;
-        else defeats = 1;
-        if (defeats >= followerLevel && followerLevel < levelCap) {
-            if (player.hasStatusEffect(timerStatusEffect)) player.addStatusValue(timerStatusEffect, timerStatusPosition, player.statusEffectv1(StatusEffects.TrainingNPCsTimersReduction));
-            else player.createOrAddStatusEffect(timerStatusEffect, timerStatusPosition, player.statusEffectv1(StatusEffects.TrainingNPCsTimersReduction));
-            defeats = 0;
-            followerLevel++;
-
-            setStats();
-            setPerks();
-            checkMonster();
-	    }
-    }
-
     override public function prepareActions():Array {
         var abilities:Array = super.prepareActions();
         var weights:Array = generateWeights();
@@ -186,8 +168,8 @@ public class NeisaCompanion extends Follower implements SaveableState{
         abilities.push(
             { call: basicAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, weight: weights[0] },
             { call: defendPlayer, type: ABILITY_SPECIAL, range: RANGE_SELF, condition: defendCondition, weight: weights[1] },
-            { call: stunAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, condition: stunCondition, weight: weights[2] },
-            { call: powerStunAttack, type: ABILITY_PHYSICAL, range: RANGE_MELEE, condition: stunCondition, weight: weights[3] }
+            { call: stunAttack, type: ABILITY_SPECIAL, range: RANGE_MELEE, condition: stunCondition, weight: weights[2] },
+            { call: powerStunAttack, type: ABILITY_SPECIAL, range: RANGE_MELEE, condition: stunCondition, weight: weights[3] }
         );
 
         return abilities;
@@ -216,7 +198,7 @@ public class NeisaCompanion extends Follower implements SaveableState{
         var dmg1:Number = this.str;
         var weaponNeisa:Number = this.weaponAttack;
 
-        dmg1 += eBaseStrengthDamage();
+        dmg1 += eBaseDamage();
         dmg1 = functions.scalingWeapon(weaponNeisa, dmg1);
         dmg1 *= functions.increasedEfficiencyOfAttacks();
         dmg1 = functions.taticianBonus(dmg1);
