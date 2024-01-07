@@ -4,6 +4,10 @@ import classes.BaseContent;
 import classes.internals.SaveableState;
 import classes.Saves;
 import classes.CoC;
+import classes.Scenes.NPCs.Neisa;
+import classes.Scenes.NPCs.Kiha;
+import classes.StatusEffects;
+import classes.Scenes.NPCs.Aurora;
 
 public class FollowerManager extends BaseContent implements SaveableState {
 
@@ -18,6 +22,14 @@ public class FollowerManager extends BaseContent implements SaveableState {
         _follower1Name = "";
         _follower2Name = "";
         _follower3Name = "";
+        followerLevels = {};
+        for each (var follower:String in followerArray) {
+            followerLevels[follower] = {
+                "name": follower,
+                "level": 1,
+                "defeats": 1
+            }
+        }
     }
 
     public function saveToObject():Object
@@ -26,7 +38,8 @@ public class FollowerManager extends BaseContent implements SaveableState {
             "follower0Name": _follower0Name,
             "follower1Name": _follower1Name,
             "follower2Name": _follower2Name,
-            "follower3Name": _follower3Name
+            "follower3Name": _follower3Name,
+            "followerLevels": followerLevels
         }
     }
 
@@ -37,6 +50,7 @@ public class FollowerManager extends BaseContent implements SaveableState {
             _follower1Name = o.follower1Name;
             _follower2Name = o.follower2Name;
             _follower3Name = o.follower3Name;
+            followerLevels = o.followerLevels;
         } else  {
             resetState();
         }
@@ -54,65 +68,127 @@ public class FollowerManager extends BaseContent implements SaveableState {
     public static var FOLLOWER_NEISA:String = "Neisa";
     public static var FOLLOWER_TYRANTIA:String = "Tyrantia";
     public static var FOLLOWER_ZENJI:String = "Zenji";
+    private static var followerArray:Array = [
+        FOLLOWER_ALVINA,
+        FOLLOWER_AMILY,
+        FOLLOWER_AURORA,
+        FOLLOWER_ETNA,
+        FOLLOWER_EXCELLIA,
+        FOLLOWER_GHOUL,
+        FOLLOWER_KIHA,
+        FOLLOWER_MIDOKA,
+        FOLLOWER_MITZI,
+        FOLLOWER_NEISA,
+        FOLLOWER_TYRANTIA,
+        FOLLOWER_ZENJI
+    ];
 
     private var _follower0Name:String = "";
-    private var _follower1Name:String = FOLLOWER_NEISA;
+    private var _follower1Name:String = "";
     private var _follower2Name:String = "";
     private var _follower3Name:String = "";
 
-    private var followerAttacked:Array = [];
+    private var _follower0:Follower;
+    private var _follower1:Follower;
+    private var _follower2:Follower;
+    private var _follower3:Follower;
 
-    private var neisaCompanion:Follower = new NeisaCompanion();
+    public var followerLevels:Object = {};
 
-    public var followers:Object = {
-        "Neisa": neisaCompanion
+    private var followerAttacked:Array;
+
+    public var followers:/*Follower*/Object = {
+        "Neisa": Neisa,
+        "Kiha": Kiha,
+        "Aurora": Aurora
     }
 
     public function FollowerManager() {
-        //Saves.registerSaveableState(this);
+        Saves.registerSaveableState(this);
         followerAttacked = [0,0,0,0];
     }
 
     public function getFollower(position:int):Follower {
-        if (position < 0 || position > 3) {
-            throw new Error("Invalid follower position entered");
-        } else {
-            var followerName:String = getFollowerName(position);
-            return followers[followerName];
-        }
-    }
-
-    public function getFollowerName(position:int):String {
-        switch (position) {
-            case 0: return _follower0Name;
-                    break;
-            case 1: return _follower1Name;
-                    break;
-            case 2: return _follower2Name;
-                    break;
-            case 3: return _follower3Name;
-                    break;
-            default: throw new Error("Invalid follower positon entered");
-        }
-    }
-
-    public function setFollower(position:int, follower:String):void {
-        if (position < 0 || position > 3) {
-            throw new Error("Invalid follower positon entered");
-        } else if (!followers.hasOwnProperty(follower)) {
-            throw new Error("Follower attempted to set was invalid");
-        } else {
-            switch(position) {
-                case 0: _follower0Name = follower;
+        if (hasFollowerInPosition(position)) {
+            switch (position) {
+                case 0: if (_follower0)
+                            return _follower0
+                        else
+                            return _follower0 = new followers[follower0Name]();
                         break;
-                case 1: _follower1Name = follower;
+                case 1: if (_follower1)
+                            return _follower1
+                        else
+                            return _follower1 = new followers[follower1Name]();
                         break;
-                case 2: _follower2Name = follower;
+                case 2: if (_follower2)
+                            return _follower2
+                        else
+                            return _follower2 = new followers[follower2Name]();
                         break;
-                case 3: _follower3Name = follower;
+                case 3: if (_follower3)
+                            return _follower3
+                        else
+                            return _follower3 = new followers[follower3Name]();
                         break;
             }
+        } 
+        return null;
+    }
+
+    public function get follower0Name():String {
+        return _follower0Name;
+    }
+
+    public function set follower0Name(follower:String):void {
+        if (followerArray.indexOf(follower) > -1) {
+            _follower0Name = follower;
         }
+    }
+
+    public function get follower1Name():String {
+        return _follower1Name;
+    }
+
+    public function set follower1Name(follower:String):void {
+        if (followerArray.indexOf(follower) > -1) {
+            _follower1Name = follower;
+        }
+    }
+
+    public function get follower2Name():String {
+        return _follower2Name;
+    }
+
+    public function set follower2Name(follower:String):void {
+        if (followerArray.indexOf(follower) > -1) {
+            _follower2Name = follower;
+        }
+    }
+
+    public function get follower3Name():String {
+        return _follower3Name;
+    }
+
+    public function set follower3Name(follower:String):void {
+        if (followerArray.indexOf(follower) > -1) {
+            _follower3Name = follower;
+        }
+    }
+
+
+    public function hasFollowerInPosition(position:int):Boolean {
+        switch (position) {
+            case 0: return follower0Name != "";
+                    break;
+            case 1: return follower1Name != "";
+                    break;
+            case 2: return follower2Name != "";
+                    break;
+            case 3: return follower3Name != "";
+                    break;
+        }
+        return false;
     }
 
     public function resetFollowerAttacks():void {
@@ -132,7 +208,7 @@ public class FollowerManager extends BaseContent implements SaveableState {
 
     public function prepareForCombat():void {
         for(var pos:int = 0; pos < 4; pos++) {
-            if (getFollowerName(pos))
+            if (hasFollowerInPosition(pos))
                 getFollower(pos).clearStatuses();
         }
     }
@@ -148,7 +224,7 @@ public class FollowerManager extends BaseContent implements SaveableState {
             return false;
         }
 
-        if (!getFollowerName(position)) {
+        if (!hasFollowerInPosition(position)) {
             trace("Perform Attack called on empty position")
             return false;
         }
@@ -170,7 +246,26 @@ public class FollowerManager extends BaseContent implements SaveableState {
             return false;
         }
         
-        return getFollowerName(position) && followerAttacked[position] == 0;
+        return hasFollowerInPosition(position) && followerAttacked[position] == 0 && !(player.hasStatusEffect(StatusEffects.MinoKing) && player.statusEffectv1(StatusEffects.MinoKing) == position);
+    }
+
+    public function levelUpCheck(followerName:String, exp:int = 1):void {
+        var levelObj:Object = followerLevels[followerName];
+
+        if (!levelObj) {
+            trace("Error - could not find follower level up object for " + followerName);
+            return;
+        }
+
+        var follower:Follower = followers[followerName];
+        levelObj.defeats += exp;
+        
+        if (levelObj.defeats >= levelObj.level && levelObj.level < follower.levelCap) {
+            if (player.hasStatusEffect(follower.timerStatusEffect)) player.addStatusValue(follower.timerStatusEffect, follower.timerStatusPosition, player.statusEffectv1(StatusEffects.TrainingNPCsTimersReduction));
+            else player.createOrAddStatusEffect(follower.timerStatusEffect, follower.timerStatusPosition, player.statusEffectv1(StatusEffects.TrainingNPCsTimersReduction));
+            levelObj.defeats = 0;
+            levelObj.level++;
+	    }
     }
 
     

@@ -27,6 +27,7 @@ import classes.Scenes.Places.HeXinDao.AdventurerGuild;
 import classes.Scenes.Places.HeXinDao.JourneyToTheEast;
 import classes.Scenes.Places.TelAdre.Loppe;
 import classes.Scenes.Quests.UrtaQuest;
+import classes.Followers.FollowerManager;
 
 public class SceneLib {
     public static var camp:Camp = new Camp(/*campInitialize*/);
@@ -36,6 +37,8 @@ public class SceneLib {
 	public static var campUpgrades:CampUpgrades = new CampUpgrades();
 
     public static var combat:Combat = new Combat();
+
+    public static var followerManager:FollowerManager = new FollowerManager();
 
     public static var exploration:Exploration = new Exploration();
     

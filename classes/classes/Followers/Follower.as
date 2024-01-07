@@ -4,16 +4,18 @@ import classes.PerkLib;
 import classes.CoC;
 import classes.StatusEffectType;
 import classes.StatusEffects;
+import classes.Scenes.SceneLib;
 
 public class Follower extends Monster {
 
     public static var functions:FollowerFunctions = new FollowerFunctions();
+    protected static var followerManager:FollowerManager = SceneLib.followerManager;
     public var ready:Boolean = false;
-    protected var levelCap:int;
+    public var levelCap:int;
     protected var followerLevel:int;
     protected var defeats:int;
-    protected var timerStatusEffect:StatusEffectType;
-    protected var timerStatusPosition:int;
+    public var timerStatusEffect:StatusEffectType;
+    public var timerStatusPosition:int;
 
 
     public function Follower() { }
@@ -84,21 +86,6 @@ public class Follower extends Monster {
     //Call from the clearstatuses function in the player class
     public function clearStatuses():void {
         ready = false;
-    }
-
-    public function levelUpCheck():void {
-        if (defeats >= 1) defeats++;
-        else defeats = 1;
-        if (defeats >= followerLevel && followerLevel < levelCap) {
-            if (player.hasStatusEffect(timerStatusEffect)) player.addStatusValue(timerStatusEffect, timerStatusPosition, player.statusEffectv1(StatusEffects.TrainingNPCsTimersReduction));
-            else player.createOrAddStatusEffect(timerStatusEffect, timerStatusPosition, player.statusEffectv1(StatusEffects.TrainingNPCsTimersReduction));
-            defeats = 0;
-            followerLevel++;
-
-            setStats();
-            setPerks();
-            checkMonster();
-	    }
     }
     
 }

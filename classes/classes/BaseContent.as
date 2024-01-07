@@ -25,6 +25,7 @@ import coc.view.MainView;
 import coc.view.NotificationView;
 import coc.view.charview.DragButton;
 import coc.xxc.StoryContext;
+import classes.Followers.FollowerManager;
 
 /**
 	 * Quick hacky method to wrap new content in a class-based structure
@@ -182,6 +183,10 @@ import coc.xxc.StoryContext;
 
 		protected function get combat():Combat {
 			return SceneLib.combat;
+		}
+
+		protected function get followerManager():FollowerManager {
+			return SceneLib.followerManager;
 		}
 
 		protected function cleanupAfterCombat(nextFunc:Function = null):void

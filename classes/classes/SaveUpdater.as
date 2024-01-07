@@ -7,6 +7,7 @@ import classes.BodyParts.LowerBody;
 import classes.BodyParts.RearBody;
 import classes.BodyParts.Skin;
 import classes.BodyParts.Tail;
+import classes.Followers.FollowerManager;
 import classes.GlobalFlags.kACHIEVEMENTS;
 import classes.GlobalFlags.kFLAGS;
 import classes.IMutations.*;
@@ -2601,10 +2602,34 @@ public class SaveUpdater extends NPCAwareContent {
 				if (player.tailType == Tail.ARIGEAN_YELLOW) player.eyes.colour = "yellow";
 				if (player.tailType == Tail.ARIGEAN_PRINCESS) player.eyes.colour = "blue";
 				flags[kFLAGS.MOD_SAVE_VERSION] = 36.42;
-			}/*
-			if (flags[kFLAGS.MOD_SAVE_VERSION] < 36.50) {
-				flags[kFLAGS.MOD_SAVE_VERSION] = 36.50;
 			}
+			if (flags[kFLAGS.MOD_SAVE_VERSION] < 36.43) {
+				outputText("\n\nMigrating Follower levels...");
+
+				var manager:FollowerManager = SceneLib.followerManager;
+				manager.followerLevels[FollowerManager.FOLLOWER_NEISA]["level"] = flags[kFLAGS.NEISA_LVL_UP];
+				manager.followerLevels[FollowerManager.FOLLOWER_NEISA]["defeats"] = flags[kFLAGS.NEISA_DEFEATS_COUNTER];
+				manager.followerLevels[FollowerManager.FOLLOWER_AURORA]["level"] = flags[kFLAGS.AURORA_LVL];
+				manager.followerLevels[FollowerManager.FOLLOWER_AURORA]["defeats"] = flags[kFLAGS.AURORA_DEFEATS_COUNTER];
+				manager.followerLevels[FollowerManager.FOLLOWER_ETNA]["level"] = flags[kFLAGS.ETNA_LVL_UP];
+				manager.followerLevels[FollowerManager.FOLLOWER_ETNA]["defeats"] = flags[kFLAGS.ETNA_DEFEATS_COUNTER];
+				manager.followerLevels[FollowerManager.FOLLOWER_KIHA]["level"] = flags[kFLAGS.KIHA_LVL_UP];
+				manager.followerLevels[FollowerManager.FOLLOWER_KIHA]["defeats"] = flags[kFLAGS.KIHA_DEFEATS_COUNTER];
+				manager.followerLevels[FollowerManager.FOLLOWER_TYRANTIA]["level"] = flags[kFLAGS.TYRANTIA_LVL_UP];
+				manager.followerLevels[FollowerManager.FOLLOWER_TYRANTIA]["defeats"] = flags[kFLAGS.TYRANTIA_DEFEATS_COUNTER];
+
+				manager.follower0Name = flags[kFLAGS.PLAYER_COMPANION_0];
+				manager.follower1Name = flags[kFLAGS.PLAYER_COMPANION_1];
+				manager.follower2Name = flags[kFLAGS.PLAYER_COMPANION_2];
+				manager.follower3Name = flags[kFLAGS.PLAYER_COMPANION_3];
+
+				outputText("\n\nFollower 0: " + manager.follower0Name + "\n");
+				outputText("Follower 1: " + manager.follower1Name + "\n");
+				outputText("Follower 2: " + manager.follower2Name + "\n");
+				outputText("Follower 3: " + manager.follower0Name + "\n");
+
+				flags[kFLAGS.MOD_SAVE_VERSION] = 36.43;
+			}/*
 			if (flags[kFLAGS.MOD_SAVE_VERSION] < 36.60) {
 				flags[kFLAGS.MOD_SAVE_VERSION] = 36.60;
 			}

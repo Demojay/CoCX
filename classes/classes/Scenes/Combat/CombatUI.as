@@ -272,6 +272,14 @@ public class CombatUI extends BaseCombatContent {
 			doMummyTurn();
 		else if (isFlyingSwordTurn())
 			doFlyingSwordTurn();
+		else if (followerManager.canAttack(0))
+			followerManager.performAttack(0);
+		else if (followerManager.canAttack(1))
+			followerManager.performAttack(1);
+		else if (followerManager.canAttack(2))
+			followerManager.performAttack(2);
+		else if (followerManager.canAttack(3))
+			followerManager.performAttack(3);
 		else if (isCompanionTurn(0))
 			doCompanionTurn(0);
 		else if (isCompanionTurn(1) && !player.hasStatusEffect(StatusEffects.MinoKing) && player.statusEffectv1(StatusEffects.MinoKing) != 1)

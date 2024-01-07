@@ -11,8 +11,10 @@ import classes.GlobalFlags.kFLAGS;
 import classes.IMutations.*;
 import classes.Scenes.SceneLib;
 import classes.internals.ChainedDrop;
+import classes.Followers.Follower;
 
-public class Kiha extends Monster
+
+public class Kiha extends Follower
 	{
 		private function kihaTimeWaster():void {
 			outputText("She supports the axe on a shoulder, cracking her neck and arching her back to stretch herself, giving you an unintended show.  ");
