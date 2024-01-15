@@ -50,6 +50,10 @@ public class Incels extends Monster {
         this.createPerk(PerkLib.TankI, 0, 0, 0, 0);
         this.createPerk(PerkLib.ToughHide, 0, 0, 0, 0);
         this.createPerk(PerkLib.MonsterRegeneration, 10, 0, 0, 0); //HP regen
+        this.abilities = [
+            { call: ripAndTearUntilYourDone, type: ABILITY_SPECIAL, range: RANGE_RANGED, tags:[TAG_BODY]},
+            { call: incelRush, type: ABILITY_PHYSICAL, condition: ripAndTearCondition, weight: 2, range: RANGE_RANGED, tags:[TAG_BODY]},
+        ];
         checkMonster();
     }
 	
@@ -60,20 +64,34 @@ public class Incels extends Monster {
         return super.eBaseDamage() * damageMult;
     }
 
+    //Each time the boss loses to lust, they lose 1/4 of their HP and become easier to damage by lust
     private function restoreLust():void {
         damageMultBase += 1;
+        this.lustVuln += 1;
+        this.HP -= maxHP() * 0.25;
 		damageMult = damageMultBase;
         lust = 0;
     }
+
+    //Boss health cannot go above a maximum amount, depending on the number of times it has maxed its lust.
+    private function boundHP():void {
+        if (damageMultBase > 1) {
+            if (this.HP > maxHP() * (1 - (0.25 * damageMultBase - 1))) {
+                this.HP = maxHP() * (1 - (0.25 * damageMultBase - 1));
+            }
+        }
+    }
+
+    //Enemy damage increases as lust does, up to an additional 100%
     private function restoreLustTick():void {
-        damageMult = damageMultBase + (Math.round(lust/1000) * 0.01);
+        damageMult = damageMultBase + (lust / maxLust());
     }
 
     override public function changeBtnWhenBound(btnStruggle:CoCButton, btnBoundWait:CoCButton):void{
         if (player.hasStatusEffect(StatusEffects.Pounced)) {
             outputText("You are buried under the incels’ writhing mass, and they’re still trying to tear you apart!");
-            btnStruggle.call(RipStruggle);
-            btnBoundWait.call(RipWait);
+            btnStruggle.call(ripStruggle);
+            btnBoundWait.call(ripWait);
         }
     }
 
@@ -91,7 +109,7 @@ public class Incels extends Monster {
         SceneLib.dungeons.demonLab.BadEndExperiment();
     }
 
-    private function IncelRush():void {
+    private function incelRush():void {
         outputText("The creatures rush at you, their blackened nails flashing. Sheer numbers weigh against you, and the creatures land strike after strike!");
         var hit:int = 0;
         for (var i:int = 0; i < 6; ++i) {
@@ -105,67 +123,75 @@ public class Incels extends Monster {
         }
     }
 
-    // idk if there's a better implementation, but let's keep it simple for now?
-    public var dsTurnCounter:int = 0;
-
     // In doAI to avoid stun checks.
-    public function DraftSupportCheck():void {
-        ++dsTurnCounter;
-        if (dsTurnCounter == 4) DraftSupportStart();
-        else if (dsTurnCounter > 4) DraftSupportContinue();
+    public function draftSupportCheck():void {
+        var combatRound:int = SceneLib.combat.combatRound;
+        if (combatRound == 4) draftSupportStart();
+        else if (combatRound > 4) draftSupportContinue();
     }
 
-    private function DraftSupportStart():void {
+    private function draftSupportStart():void {
         outputText("You notice the pink gas spilling from the lab as it washes over the horde. The reaction is immediate, the animalistic creatures letting out wails of anger, some even scratching at their bodies as if to rid themselves of the effects. As the gas washes over you, blood rushes to your cheeks.");
         lustDraftTick();
 		outputText("\n");
     }
 
-    public function DraftSupportContinue():void {
+    public function draftSupportContinue():void {
         outputText("Lustdraft gas continues to wash over the battlefield, weakening your knees and sending the horde in front of you into a frenzy. You need to end this fight as fast as possible!");
         lustDraftTick();
 		outputText("\n");
     }
 
     public function lustDraftTick():void {
-        player.takeLustDamage(60 + player.lib, true);
-		lust += (60 + lib) * 10;
+        player.takeLustDamage(60 + rand(player.lib), true);
+		lust += Math.max(maxLust() * 0.1, eBaseLibidoDamage() * lustVuln);
     }
 
-    private function RipAndTearUntilYourDone():void {
+    private function ripAndTearCondition():Boolean {
+        return !player.hasStatusEffect(StatusEffects.Pounced) && !hasStatusEffect(StatusEffects.AbilityCooldown1);
+    }
+
+    private function ripAndTearUntilYourDone():void {
         outputText("The mass of frenzied creatures grab hold of you. One takes an arm, another bites at you with sharp fangs. You struggle, but as soon as you throw one off you, another takes its place, and more are piling on, burying you under a tidal wave of flesh!");
         player.createStatusEffect(StatusEffects.Pounced, 2, 0, 0, 0);
     }
 
-    public function RipStruggle():void {
-        if (rand(player.str) > (this.str / 10) * (1 + player.getStatusValue(StatusEffects.Pounced, 1)) || player.hasPerk(PerkLib.FluidBody)) RipBreakOut();
-        else RipCont();
+    public function ripStruggle():void {
+        if (rand(player.str) > (this.str / 10) * (player.getStatusValue(StatusEffects.Pounced, 1)) || player.hasPerk(PerkLib.FluidBody)) ripBreakOut();
+        else ripCont();
         SceneLib.combat.enemyAIImpl();
     }
 
-    public function RipWait():void {
-        RipCont();
+    public function ripWait():void {
+        ripCont();
         SceneLib.combat.enemyAIImpl();
     }
 
-    private function RipCont():void {
+    private function ripCont():void {
         if (player.getStatusValue(StatusEffects.Pounced, 1) > 0) player.addStatusValue(StatusEffects.Pounced, 1, -1);
         outputText("The horde rips at your body, scratches and bites coming at you from every side. You try to escape, but for every hold you break, another claw comes in to grab you.");
-        for (var i:int = 0; i < 10; ++i) {
+        for (var i:int = 0; i < 3; ++i) {
             eOneAttack(true);
         }
     }
 
-    private function RipBreakOut():void {
+    private function ripBreakOut():void {
         player.removeStatusEffect(StatusEffects.Pounced);
         outputText("You manage to get your elbow into the mouth of one particularly tenacious creature, and it recoils, headbutting another by accident. The two begin fighting, and the flailing starts a miniature brawl between the Sexless freaks. You feel the weight on you lessening, and you heave, sending two more of the creatures tumbling. You scramble, pulling yourself out, but as you do, the creatures refocus on you, almost immediately.");
         takePhysDamage(eBaseDamage());
+        //Prevent immediate re-application of pounce
+        createStatusEffect(StatusEffects.AbilityCooldown1, 1, 0, 0, 0);
     }
 
     override protected function performCombatAction():void {
 		restoreLustTick();
-        if (!player.hasStatusEffect(StatusEffects.Pounced) && rand(2) == 0) RipAndTearUntilYourDone();
-        else IncelRush();
+        super.performCombatAction();
+    }
+
+    override public function combatRoundUpdate():void {
+        super.combatRoundUpdate();
+        draftSupportCheck();
+        boundHP;
     }
 }
 

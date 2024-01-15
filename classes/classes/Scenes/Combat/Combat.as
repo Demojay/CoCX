@@ -9366,7 +9366,6 @@ public class Combat extends BaseContent {
         }
 		if (player.hasStatusEffect(StatusEffects.ConstantHeatConditions) && !player.hasPerk(PerkLib.FireAffinity) && !player.hasPerk(PerkLib.AffinityIgnis)) SceneLib.volcanicCrag.ConstantHeatConditionsTick();
 		if (player.hasStatusEffect(StatusEffects.SubZeroConditions) && !player.hasPerk(PerkLib.ColdAffinity)) SceneLib.glacialRift.SubZeroConditionsTick();
-        if (monster is Incels) (monster as Incels).DraftSupportCheck();
         if (player.hasStatusEffect(StatusEffects.UnderwaterOutOfAir)) {
             var deoxigen:Number = 0;
             deoxigen += (player.maxHP() * 0.05);
@@ -11551,10 +11550,14 @@ public class Combat extends BaseContent {
 		return venomCRecharge;
 	}
 
-    internal var combatRound:int = 0;
+    internal var _combatRound:int = 0;
+
+    public function get combatRound():int {
+        return _combatRound;
+    }
 
     public function startCombatImpl(monster_:Monster, plotFight_:Boolean = false):void {
-        combatRound = 0;
+        _combatRound = 0;
         CoC.instance.plotFight = plotFight_;
         mainView.hideMenuButton(MainView.MENU_DATA);
         mainView.hideMenuButton(MainView.MENU_APPEARANCE);
@@ -12175,7 +12178,7 @@ public function unarmedCombatXP(XP:Number = 0):void  	{player.gainCombatXP(MASTE
 public function combatRoundOver():void {
     var HPPercent:Number;
     HPPercent = player.HP/player.maxHP();
-    combatRound++;
+    _combatRound++;
     player.statStore.advanceTime(Buff.RATE_ROUNDS,1);
     monster.statStore.advanceTime(Buff.RATE_ROUNDS,1);
     if (player.statStore.recentlyRemovedTags["WarriorsRage"]){

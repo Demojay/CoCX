@@ -14,7 +14,7 @@ public class BaseCombatContent extends BaseContent {
 		return combat.inCombat;
 	}
 	protected function get combatRound():int {
-		return combat.combatRound;
+		return combat._combatRound;
 	}
 	protected function combatMenu(newRound:Boolean = true):void {
 		combat.combatMenu(newRound);
