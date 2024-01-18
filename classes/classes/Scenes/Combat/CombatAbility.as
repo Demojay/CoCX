@@ -474,7 +474,7 @@ public class CombatAbility extends BaseCombatContent {
 		}
 		if (!interceptable || !monster.interceptPlayerAbility(this)) {
 			doEffect(output);
-			monster.postPlayerAbility(this);
+			monster.postPlayerAbility(this, output);
 		}
 	}
 	
@@ -492,7 +492,9 @@ public class CombatAbility extends BaseCombatContent {
 	// "Use ablity" = setCooldown() + useResources() + doEffect()
 	
 	public function setCooldown():void {
-		player.cooldowns[id] = calcCooldown();
+		var cooldown:int = calcCooldown();
+		if (cooldown > 0) cooldown++;
+		player.cooldowns[id] = cooldown;
 	}
 
 	/**
@@ -500,7 +502,8 @@ public class CombatAbility extends BaseCombatContent {
 	 * Must be manually called as part of doEffect()
 	 */
 	public function setDuration():void {
-		player.durations[id] = calcDuration();
+		var duration:int = calcDuration();
+		player.durations[id] = duration;
 	}
 	
 	/**

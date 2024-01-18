@@ -714,11 +714,15 @@ public final class Mutations extends MutationsHelper {
         if (player.hasPerk(PerkLib.SoulApprentice)) {
             if (!player.hasStatusEffect(StatusEffects.KnowsFlamesOfLove)) {
                 outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling lust into flames.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
-                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Flames of Love (Rankless).</b>");
-                player.createStatusEffect(StatusEffects.KnowsFlamesOfLove, 1, 0, 0, 0);
+                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Flames of Love (Low Rank).</b>");
+                player.createStatusEffect(StatusEffects.KnowsFlamesOfLove, 2, 0, 0, 0);
                 return;
             }
-            if (player.hasStatusEffect(StatusEffects.KnowsFlamesOfLove)) {
+            else if (player.statusEffectv1(StatusEffects.KnowsFlamesOfLove) < 2) {
+                outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling lust into flames.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
+                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Flames of Love (Low Rank).</b>");
+                player.changeStatusValue(StatusEffects.KnowsFlamesOfLove, 1, 2);
+            } else {
                 outputText("When you open the manual, it turns out you already know this soul skill.  Having a hunch you read whole manual and when it disappears into thin air you feel it does restored some of your soulforce.");
                 EngineCore.SoulforceChange(50);
             }
@@ -748,10 +752,14 @@ public final class Mutations extends MutationsHelper {
             if (!player.hasStatusEffect(StatusEffects.KnowsIciclesOfLove)) {
                 outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling lust into icicles.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
                 outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Icicles of Love (Low Rank).</b>");
-                player.createStatusEffect(StatusEffects.KnowsIciclesOfLove, 1, 0, 0, 0);
+                player.createStatusEffect(StatusEffects.KnowsIciclesOfLove, 2, 0, 0, 0);
                 return;
             }
-            if (player.hasStatusEffect(StatusEffects.KnowsIciclesOfLove)) {
+            else if (player.statusEffectv1(StatusEffects.KnowsIciclesOfLove) < 2) {
+                outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling lust into icicles.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
+                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Icicles of Love (Low Rank).</b>");
+                player.changeStatusValue(StatusEffects.KnowsIciclesOfLove, 1, 2);
+            } else {
                 outputText("When you open the manual, it turns out you already know this soul skill.  Having a hunch you read whole manual and when it disappears into thin air you feel it does restored some of your soulforce.");
                 EngineCore.SoulforceChange(50);
             }
@@ -780,11 +788,15 @@ public final class Mutations extends MutationsHelper {
         if (player.hasPerk(PerkLib.SoulApprentice)) {
             if (!player.hasStatusEffect(StatusEffects.KnowsStormOfSisterhood)) {
                 outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling wrath into lighting.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
-                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Storm of Sisterhood (Rankless).</b>");
-                player.createStatusEffect(StatusEffects.KnowsStormOfSisterhood, 1, 0, 0, 0);
+                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Storm of Sisterhood (Low Rank).</b>");
+                player.createStatusEffect(StatusEffects.KnowsStormOfSisterhood, 2, 0, 0, 0);
                 return;
             }
-            if (player.hasStatusEffect(StatusEffects.KnowsStormOfSisterhood)) {
+            else if (player.statusEffectv1(StatusEffects.KnowsStormOfSisterhood) < 2) {
+                outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling wrath into lighting.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
+                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Storm of Sisterhood (Low Rank).</b>");
+                player.changeStatusValue(StatusEffects.KnowsStormOfSisterhood, 1, 2);
+            } else {
                 outputText("When you open the manual, it turns out you already know this soul skill.  Having a hunch you read whole manual and when it disappears into thin air you feel it does restored some of your soulforce.");
                 EngineCore.SoulforceChange(50);
             }
@@ -813,11 +825,15 @@ public final class Mutations extends MutationsHelper {
         if (player.hasPerk(PerkLib.SoulApprentice)) {
             if (!player.hasStatusEffect(StatusEffects.KnowsNightOfBrotherhood)) {
                 outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling wrath into darkness.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
-                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Night of Brotherhood (Rankless).</b>");
-                player.createStatusEffect(StatusEffects.KnowsNightOfBrotherhood, 1, 0, 0, 0);
+                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Night of Brotherhood (Low Rank).</b>");
+                player.createStatusEffect(StatusEffects.KnowsNightOfBrotherhood, 2, 0, 0, 0);
                 return;
             }
-            if (player.hasStatusEffect(StatusEffects.KnowsNightOfBrotherhood)) {
+            else if (player.hasStatusEffect(StatusEffects.KnowsNightOfBrotherhood)) {
+                outputText("You open the manual, and discover it to be an instructional on how the use a soul skill.  Most of it is filled with generic information on poses and channeling wrath into darkness.  In no time at all you've read the whole thing, but it disappears into thin air before you can put it away.");
+                outputText("[pg]You blink in surprise, assaulted by the knowledge of a <b>new soul skill: Night of Brotherhood (Low Rank).</b>");
+                player.changeStatusValue(StatusEffects.KnowsNightOfBrotherhood, 1, 2);
+            } else {
                 outputText("When you open the manual, it turns out you already know this soul skill.  Having a hunch you read whole manual and when it disappears into thin air you feel it does restored some of your soulforce.");
                 EngineCore.SoulforceChange(50);
             }
@@ -831,6 +847,25 @@ public final class Mutations extends MutationsHelper {
         clearOutput();
         outputText("You open the manual, and discover it seems to be almost unreadable. It looks like it would teach the reader to use some sort of soul skill, but it seems all very fragmentary. In no time at all, you've read the whole thing, and like other manuscripts, it starts to disappear into thin air. When you are left with nothing to do, you are considering your next course of action when a new thought begins to circulate in your mind. The more it circles, it seems to literally 'suck you in'. You try to stop it, but it's too late. 'Would I at least not hit the ground...' is the last not devoured thought you have before blanking out. [pg]After an unknown amount of time, you awake on the floor with the knowledge of a b>new soul skill: Devourer/b> seared into your mind.");
         player.createStatusEffect(StatusEffects.KnowsHeavensDevourer, 1, 0, 0, 0);
+    }
+	
+    public function soaringbladesmanual(player:Player):void {
+        clearOutput();
+		if (player.hasPerk(PerkLib.Dantain)) {
+			if (!player.hasPerk(PerkLib.SoaringBlades)) {
+				outputText("You open the manual and read it slowly. Initially, it seems needlessly complicated, but you take a moment to read it a again, slowly working out the parts as the aspect becomes clearer. It goes into depth about lowering the consumption of soulforce when manipulating flying swords. You can see the ways it teaches you how to lower consumption when the change is not related to progressing through each minor or major cultivation realm, but due to progression developing dantain. From Qi Condensation and Foundation Establishment toward Golden Core or Nascent Soul.\n\n");
+				outputText("You're feeling more enlightened, closer and closer with each thorough read. You read from the beginning once again, before you finally close the manual with a sense of enlightenment. You barely notice the manual fading away in your grasp. (<b>Gained Perk: Soaring Blades!</b>)");
+				player.createPerk(PerkLib.SoaringBlades, 0, 0, 0, 0);
+				return;
+			}
+			if (player.hasPerk(PerkLib.SoaringBlades)) {
+				outputText("When you open the manual, it turns out you already know this passive.  Having a hunch you read whole manual and when it disappears into thin air you feel it does restored some of your soulforce.");
+				EngineCore.SoulforceChange(150);
+			}
+		} else {
+			outputText("You open the manual, and discover to your horror it's way too complicated passive to learn currently.  What makes it worst it's nature of manual that would vanish in a moment whenever you memorized everything about this soulskill or not.  Moment later it start disappears into thin air before you can put it away. ");
+            outputText("You should be more careful next time to not waste any new manual by trying to learn it when you not even found your own Dantian.");
+		}
     }
 
     public function verydilutedarcaneregenconcotion(player:Player):void {
