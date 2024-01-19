@@ -46,7 +46,7 @@ import coc.view.CoCButton;
 			this.fatigue = 0;
 			this.gems = 400 + rand(50);
 			this.level = 70;
-			this.lustVuln = 0;
+			this.lustVuln = 0.1;
 			this.drop = NO_DROP;
 			this.createPerk(PerkLib.ArchersStaminaI, 0, 0, 0, 0);
 			this.createPerk(PerkLib.InhumanDesireI, 0, 0, 0, 0);
@@ -127,9 +127,9 @@ import coc.view.CoCButton;
 			{
 				var opts:Array = [sicem, corruptiveShower, lustAuraCast];
 				
-				if (this.lust <  40) opts.push(taunt);
-				if (this.lust >= 40) opts.push(motorboat);
-				if (this.lust >= 40) opts.push(tasteTheEcstasy);
+				if (this.lust100 <  40) opts.push(taunt);
+				if (this.lust100 >= 40) opts.push(motorboat);
+				if (this.lust100 >= 40) opts.push(tasteTheEcstasy);
 				opts[rand(opts.length)]();
 			}
 			statScreenRefresh();
@@ -190,7 +190,7 @@ import coc.view.CoCButton;
 			}
 			this.HP = this.maxHP();
 			if (this.lustVuln < 0.95) this.lustVuln += 0.1;
-			this.fatigue += 50;
+			this.fatigue += 50 * stats_multi_based_on_misc();
 			if (fatigue >= this.maxFatigue()) { //Exhausted!
 				outputText(" <b>It appears that the vines have run out of pink slime.</b>");
 				fatigue = this.maxFatigue();
@@ -239,11 +239,17 @@ import coc.view.CoCButton;
 				}
 				player.addStatusValue(StatusEffects.Tentagrappled, 1, 1);
 				if (!player.hasPerk(PerkLib.Juggernaut) && armorPerk != "Heavy") {
-					player.takePhysDamage(0.75*this.str + rand(15));
+					var baseDamage:Number = eBaseStrengthDamage();
+					//Deals between 0.7 - 0.8 of eBaseStrengthDamage()
+					player.takePhysDamage(0.75 * baseDamage + (rand(baseDamage * 0.1) - baseDamage * 0.05));
 				}
-				player.dynStats("lus+", 3 + rand(3));
-				if (flags[kFLAGS.PC_FETISH] >= 2) player.dynStats("lus+", 5);
+				player.takeLustDamage(eBaseDamage(), true);
+				if (flags[kFLAGS.PC_FETISH] >= 2) {
+					outputText(" ");
+					player.takeLustDamage(eBaseDamage());
+				}
 			}
+			outputText("\n\n");
 			SceneLib.combat.enemyAIImpl();
 		}
 		
@@ -266,9 +272,12 @@ import coc.view.CoCButton;
 			}
 			player.addStatusValue(StatusEffects.Tentagrappled, 1, 1);
 			if (!player.hasPerk(PerkLib.Juggernaut) && armorPerk != "Heavy") {
-				player.takePhysDamage(.75*this.str + rand(15));
+				var baseDamage:Number = eBaseStrengthDamage();
+				//Deals between 0.7 - 0.8 of eBaseStrengthDamage()
+				player.takePhysDamage(0.75 * baseDamage + (rand(baseDamage * 0.1) - baseDamage * 0.05));
 			}
-			player.dynStats("lus+", 3 + rand(3));
+			player.takeLustDamage(eBaseDamage(), true);
+			outputText("\n\n");
 		}
 		
 		private function sicem():void
@@ -283,16 +292,14 @@ import coc.view.CoCButton;
 			{
 				if (!(player.getEvasionRoll()))
 				{
-					damage += 2 + rand(1 + player.lib / 20) + rand(1 + player.effectiveSensitivity() / 20);
+					damage += eBaseLibidoDamage() / 30 + player.effectiveSensitivity() / 20;
 				}
 			}
 			
 			if (damage >= 0)
 			{
-				var sL:Number = player.lust;
-				player.dynStats("lus+", damage);
-				sL = Math.round(player.lust - sL);
-				outputText(" The sinuous plant-based tentacles lash at you like a dozen tiny whips! Preparing for stinging pain, you're somewhat taken aback when they pull back at the last moment, sensually caressing your most sensitive places! (" + sL + ")");
+				outputText(" The sinuous plant-based tentacles lash at you like a dozen tiny whips! Preparing for stinging pain, you're somewhat taken aback when they pull back at the last moment, sensually caressing your most sensitive places! ");
+				player.takeLustDamage(damage, true);
 			}
 			else
 			{
@@ -328,27 +335,27 @@ import coc.view.CoCButton;
 			player.addStatusValue(StatusEffects.ShowerDotEffect, 1, -1);
 			
 				//Dot effect
-			if (player.lust < .5*player.maxLust()) outputText("The tentacles' sex-juices are still covering you - still slowly arousing you. You've got a good handle on it for now.\n\n");
-			else if (player.lust < .6*player.maxLust()) 
+			if (player.lust100 < 50) outputText("The tentacles' sex-juices are still covering you - still slowly arousing you. You've got a good handle on it for now.\n\n");
+			else if (player.lust100 < 60) 
 			{
 				outputText("You try to wipe some of the fragrant seed from your palm, but all you succeed in doing is smearing it into your [hips].");
 				if (player.cor < 50) outputText(" You're ashamed to admit");
 				else outputText(" You're a little irritated to admit"); 
 				outputText(" that it's starting to feel really good.\n\n");
 			}
-			else if (player.lust < .7*player.maxLust())
+			else if (player.lust100 < 70)
 			{
 				outputText("You groan at the warm slipperiness enveloping your [skinFurScales] as the tainted tentacles' fluids go to work on you. There's nothing you can do but try to endure it. If only it didn't feel so... hot to be drenched in. If you wind up losing, you hope she'll do this again....\n\n");
 			}
-			else if (player.lust < .8*player.maxLust())
+			else if (player.lust100 < 80)
 			{
 				outputText("You whimper as the insidious plant-sperm works on your vulnerable [skin.type], building pernicious desires in tiny, insistent increments. It's getting harder to focus... harder not to think about how good all those tentacles would feel in you and on you, caressing your most intimate places.\n\n");
 			}
-			else if (player.lust < .9*player.maxLust())
+			else if (player.lust100 < 90)
 			{
 				outputText("You shudder in place, stumbling dazedly as your ardor rises to a fever pitch. Soon, you're going to wind up too turned-on to resist, and when that happens, those tentacles are going to take you. The worst part? It's starting to sound really, really... really good to you. Not struggling, no tension... just giving in to what your body craves and loving it.\n\n");
 			}
-			else if (player.lust < 1.0*player.maxLust())
+			else if (player.lust < player.maxLust())
 			{
 				outputText("Ohhhh, you're close now. You can feel the need hammering inside of you, soaking in through your [skinFurScales] to stoke the fires between your [legs] into a blazing inferno, one you couldn't resist even if you wanted to. Then... then you'll be free to cum. You shake your head. Gotta hold it together");
 				if (player.hasCock())
@@ -390,8 +397,8 @@ import coc.view.CoCButton;
 			outputText(" They're so soft and pillowy that you can't help but enjoy the feel of them on your skin, and you take a deep, contented breath before remembering where you are and struggling out of the creamy valley.");
 			
 			outputText("\n\nYour foe giggles, favoring you with a blown kiss. Her nipples are obviously a little harder, but then again, so are yours.");
-			player.dynStats("lus+", 3 + rand(3));
-			lust+=3 + rand(3);
+			player.takeLustDamage(eBaseDamage(), true);
+			lust += eBaseLibidoDamage() * 5;
 
 		}
 		
@@ -415,7 +422,10 @@ import coc.view.CoCButton;
 			if (this.hasStatusEffect(StatusEffects.LustAura))
 			{
 				outputText("  Your eyes cross with unexpected feelings as the taste of desire in the air worms its way into you.  The intense aura quickly subsides, but it's already done its job.");
-				player.takeLustDamage((8+int(player.lib/20 + player.cor/25)), true);
+				var lustDmg:Number = inteligencescalingbonus() / 3;
+				lustDmg += rand(player.lib / 20);
+				lustDmg *= 1 + (0.5 * (player.cor / 100));
+				player.takeLustDamage(lustDmg, true);
 			}
 			else 
 			{
@@ -431,12 +441,17 @@ import coc.view.CoCButton;
 			outputText("\n\nOne of those tentacles is above you now, and it points down, its phallic shape clear. The slit at the end spreads open, and a blob of whitish goo appears. ");
 			
 			//Fail strength check!
-			if (rand(player.str - 30) + 30 > this.str)
+			var minStrength:Number = Math.max(30, player.str * 0.1);
+			if (rand(player.str - minStrength) + minStrength > this.str)
 			{
 				outputText("\n\nIt hangs there for a moment while the succubus yanks your mouth open, just in time to receive the undoubtedly drugged jism. It practically sizzles on your tongue, tasting of almonds and walnuts with a distinctly fruity aftertaste. Your mouth gulps it down automatically, and with slow-dawning comprehension, you understand how the succubus could be so obsessed with these plants. Your groin heats eagerly as the plant spunk absorbs into your system. Your pupils dilate. Gods, it feels good!");
 				
-				outputText("\n\nYou barely even realize that the temptress has stepped away. How can you fight this?");
-				player.dynStats("lus", (8 + int(player.lib / 20 + player.cor / 25)), "cor+", 5);
+				outputText("\n\nYou barely even realize that the temptress has stepped away. How can you fight this? ");
+				var lustDmg:Number = inteligencescalingbonus() / 3;
+				lustDmg += rand(player.lib / 20);
+				lustDmg *= 1 + (0.5 * (player.cor / 100));
+				player.takeLustDamage(lustDmg, true);
+				player.dynStats("cor+", 5);
 			}
 			else
 			{

@@ -879,7 +879,7 @@ import classes.Scenes.Combat.CombatAbilities;
 			return max1;
 		}
 
-		private function stats_multi_based_on_misc():Number {
+		protected function stats_multi_based_on_misc():Number {
 			var temp:Number = 1;
 			if (hasPerk(PerkLib.EnemyEliteType)) temp += 1;
 			if (hasPerk(PerkLib.EnemyChampionType)) temp += 2;

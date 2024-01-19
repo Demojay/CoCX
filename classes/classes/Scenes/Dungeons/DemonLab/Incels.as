@@ -14,6 +14,7 @@ import classes.StatusEffects;
 import classes.internals.WeightedDrop;
 
 import coc.view.CoCButton;
+import classes.internals.Utils;
 
 public class Incels extends Monster {
 
@@ -51,8 +52,8 @@ public class Incels extends Monster {
         this.createPerk(PerkLib.ToughHide, 0, 0, 0, 0);
         this.createPerk(PerkLib.MonsterRegeneration, 10, 0, 0, 0); //HP regen
         this.abilities = [
-            { call: ripAndTearUntilYourDone, type: ABILITY_SPECIAL, range: RANGE_RANGED, tags:[TAG_BODY]},
-            { call: incelRush, type: ABILITY_PHYSICAL, condition: ripAndTearCondition, weight: 2, range: RANGE_RANGED, tags:[TAG_BODY]},
+            { call: ripAndTearUntilYourDone, type: ABILITY_SPECIAL, condition: ripAndTearCondition, range: RANGE_RANGED, tags:[TAG_BODY]},
+            { call: incelRush, type: ABILITY_PHYSICAL, weight: 2, range: RANGE_RANGED, tags:[TAG_BODY]},
         ];
         checkMonster();
     }
@@ -89,7 +90,7 @@ public class Incels extends Monster {
 
     override public function changeBtnWhenBound(btnStruggle:CoCButton, btnBoundWait:CoCButton):void{
         if (player.hasStatusEffect(StatusEffects.Pounced)) {
-            outputText("You are buried under the incels’ writhing mass, and they’re still trying to tear you apart!");
+            outputText("You are buried under the incels’ writhing mass, and they’re still trying to tear you apart!\n\n");
             btnStruggle.call(ripStruggle);
             btnBoundWait.call(ripWait);
         }
@@ -110,7 +111,7 @@ public class Incels extends Monster {
     }
 
     private function incelRush():void {
-        outputText("The creatures rush at you, their blackened nails flashing. Sheer numbers weigh against you, and the creatures land strike after strike!");
+        outputText("The creatures rush at you, their blackened nails flashing. Sheer numbers weigh against you, and the creatures land strike after strike!\n");
         var hit:int = 0;
         for (var i:int = 0; i < 6; ++i) {
             if (player.getEvasionRoll()) {
@@ -119,7 +120,7 @@ public class Incels extends Monster {
             }
         }
         if (hit == 0) {
-            outputText("You see the creatures massing for their attack. Before they can surround you, you kick one of the banquet tables over, delaying their charge long enough for you to put some distance between you and the horde. ");
+            outputText("You see the creatures massing for their attack. Before they can surround you, you kick one of the banquet tables over, delaying their charge long enough for you to put some distance between you and the horde.\n\n");
         }
     }
 
@@ -131,20 +132,20 @@ public class Incels extends Monster {
     }
 
     private function draftSupportStart():void {
-        outputText("You notice the pink gas spilling from the lab as it washes over the horde. The reaction is immediate, the animalistic creatures letting out wails of anger, some even scratching at their bodies as if to rid themselves of the effects. As the gas washes over you, blood rushes to your cheeks.");
+        outputText("You notice the pink gas spilling from the lab as it washes over the horde. The reaction is immediate, the animalistic creatures letting out wails of anger, some even scratching at their bodies as if to rid themselves of the effects. As the gas washes over you, blood rushes to your cheeks. ");
         lustDraftTick();
-		outputText("\n");
+		outputText("\n\n");
     }
 
     public function draftSupportContinue():void {
-        outputText("Lustdraft gas continues to wash over the battlefield, weakening your knees and sending the horde in front of you into a frenzy. You need to end this fight as fast as possible!");
+        outputText("Lustdraft gas continues to wash over the battlefield, weakening your knees and sending the horde in front of you into a frenzy. You need to end this fight as fast as possible! ");
         lustDraftTick();
-		outputText("\n");
+		outputText("\n\n");
     }
 
     public function lustDraftTick():void {
-        player.takeLustDamage(60 + rand(player.lib), true);
-		lust += Math.max(maxLust() * 0.1, eBaseLibidoDamage() * lustVuln);
+        player.takeLustDamage(60 + rand(player.lib / 2), true);
+		lust += Math.max(maxLust() * 0.1, eBaseLibidoDamage() * 5 * lustVuln);
     }
 
     private function ripAndTearCondition():Boolean {
@@ -169,7 +170,7 @@ public class Incels extends Monster {
 
     private function ripCont():void {
         if (player.getStatusValue(StatusEffects.Pounced, 1) > 0) player.addStatusValue(StatusEffects.Pounced, 1, -1);
-        outputText("The horde rips at your body, scratches and bites coming at you from every side. You try to escape, but for every hold you break, another claw comes in to grab you.");
+        outputText("The horde rips at your body, scratches and bites coming at you from every side. You try to escape, but for every hold you break, another claw comes in to grab you.\n\n");
         for (var i:int = 0; i < 3; ++i) {
             eOneAttack(true);
         }
@@ -177,10 +178,14 @@ public class Incels extends Monster {
 
     private function ripBreakOut():void {
         player.removeStatusEffect(StatusEffects.Pounced);
-        outputText("You manage to get your elbow into the mouth of one particularly tenacious creature, and it recoils, headbutting another by accident. The two begin fighting, and the flailing starts a miniature brawl between the Sexless freaks. You feel the weight on you lessening, and you heave, sending two more of the creatures tumbling. You scramble, pulling yourself out, but as you do, the creatures refocus on you, almost immediately.");
-        takePhysDamage(eBaseDamage());
+        var selfDamage:Number = eBaseDamage();
+        outputText("You manage to get your elbow into the mouth of one particularly tenacious creature, and it recoils, headbutting another by accident." + 
+            " The two begin fighting, and the flailing starts a miniature brawl between the Sexless freaks." + 
+            " You feel the weight on you lessening, and you heave, sending two more of the creatures tumbling. You scramble, pulling yourself out, but as you do," + 
+            " the creatures refocus on you, almost immediately. " + Utils.formatNumber(selfDamage) + "\n\n");
+        takePhysDamage(selfDamage);
         //Prevent immediate re-application of pounce
-        createStatusEffect(StatusEffects.AbilityCooldown1, 1, 0, 0, 0);
+        createStatusEffect(StatusEffects.AbilityCooldown1, 2, 0, 0, 0);
     }
 
     override protected function performCombatAction():void {
@@ -191,7 +196,7 @@ public class Incels extends Monster {
     override public function combatRoundUpdate():void {
         super.combatRoundUpdate();
         draftSupportCheck();
-        boundHP;
+        boundHP();
     }
 }
 
