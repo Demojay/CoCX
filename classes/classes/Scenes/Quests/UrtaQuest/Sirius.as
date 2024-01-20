@@ -87,9 +87,9 @@ public class Sirius extends Naga
 			damage = player.takePoisonDamage(damage, true);
 		}
 
-		override public function interceptPlayerAbility(ability:CombatAbility):Boolean {
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
 			if (ability is TeaseSkill) {
-				outputText("He is too focused on your eyes to pay any attention to your teasing, <b>looks like you'll have to beat him up.</b>\n\n");
+				if (display) outputText("He is too focused on your eyes to pay any attention to your teasing, <b>looks like you'll have to beat him up.</b>\n\n");
 				return true;
 			}
 			return false;

@@ -18,7 +18,13 @@ public class CombatAbilities {
 	public static const MummyAttack:MummyAttackSkill			= new MummyAttackSkill();
 	public static const Tease:TeaseSkill						= new TeaseSkill();
 	public static const GoblinLustBomb:GoblinLustBombSkill		= new GoblinLustBombSkill();
+	public static const RangeAttack:RangeAttackSkill			= new RangeAttackSkill();
+	public static const ThrowWeapon:ThrowWeaponSkill			= new ThrowWeaponSkill();
+	public static const TeleThrow:TeleThrowSkill				= new TeleThrowSkill();
 	public static const ALL_GENERAL_SKILLS:/*CombatAbility*/Array = [
+		RangeAttack,
+		ThrowWeapon,
+		TeleThrow,
 		FlyingSwordAttack,
 		WillOfTheWisp,
 		MummyAttack,

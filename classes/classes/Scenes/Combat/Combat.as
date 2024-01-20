@@ -67,6 +67,7 @@ import mx.formatters.NumberFormatter;
 public class Combat extends BaseContent {
     public var pspecials:PhysicalSpecials = new PhysicalSpecials();
     public var mspecials:MagicSpecials = new MagicSpecials();
+    public var general:CombatGeneral = new CombatGeneral();
     public var magic:CombatMagic = new CombatMagic();
     public var teases:CombatTeases = new CombatTeases();
     public var soulskills:CombatSoulskills = new CombatSoulskills();
@@ -2693,60 +2694,15 @@ public class Combat extends BaseContent {
 	}
 
 	public function baseRangeAccuracy():Number {
-		var baccmod:Number = 128;
-		if (player.level > 0) {
-			if (player.level > 5) baccmod += 72;
-			else baccmod += 12 * player.level;
-		}
-        if (player.hasPerk(PerkLib.HistoryScout) || player.hasPerk(PerkLib.PastLifeScout)) baccmod += 40;
-        baccmod += player.rangedAccuracyStat.value;
-        if (player.statusEffectv1(StatusEffects.Kelt) > 0) {
-            if (player.statusEffectv1(StatusEffects.Kelt) <= 100) baccmod += player.statusEffectv1(StatusEffects.Kelt);
-            else baccmod += 100;
-        }
-        if (player.statusEffectv1(StatusEffects.Kindra) > 0) {
-            if (player.statusEffectv1(StatusEffects.Kindra) <= 150) baccmod += player.statusEffectv1(StatusEffects.Kindra);
-            else baccmod += 150;
-        }
-        if (player.inte > 50 && player.hasPerk(PerkLib.JobHunter)) {
-            if (player.inte <= 150) baccmod += (player.inte - 50);
-            else baccmod += 100;
-        }
-        if (player.hasPerk(PerkLib.CarefulButRecklessAimAndShooting)) baccmod += 60;
-        if (player.isFlying()) {
-            if (player.jewelryName != "Ring of deadeye aim") baccmod -= 100;
-            if (player.hasPerk(PerkLib.Aerobatics)) baccmod += 40;
-            if (player.hasPerk(PerkLib.AdvancedAerobatics)) baccmod += 100;
-        }
-		if (player.hasPerk(PerkLib.TrueSeeing)) baccmod += 40;
-        if (monster.hasStatusEffect(StatusEffects.EvasiveTeleport) && !player.hasPerk(PerkLib.TrueSeeing)) baccmod -= player.statusEffectv1(StatusEffects.EvasiveTeleport);
-        if (player.jewelryName == "Ring of deadeye aim") baccmod += 40;
-        if (player.hasMutation(IMutationsLib.HumanEyesIM) && player.racialScore(Races.HUMAN) > 17) {
-			baccmod += 10;
-			if (player.perkv1(IMutationsLib.HumanEyesIM) >= 3) baccmod += 10;
-			if (player.perkv1(IMutationsLib.HumanEyesIM) >= 4) baccmod += 20;
-		}
-		return baccmod;
+		return general.baseRangeAccuracy();
 	}
 
     public function arrowsAccuracy():Number {
-        var accmod:Number = 0;
-		accmod += baseRangeAccuracy();
-		accmod += Math.round((masteryArcheryLevel() - 1) / 2);
-        return accmod;
+        return general.arrowsAccuracy();
     }
 
     public function arrowsAccuracyPenalty():Number {
-        var accrmodpenalty:Number = 15;
-        if (player.hasStatusEffect(StatusEffects.ResonanceVolley)) accrmodpenalty -= 10;
-        if (player.perkv1(IMutationsLib.ElvishPeripheralNervSysIM) >= 3) accrmodpenalty -= 5;
-		if (player.hasMutation(IMutationsLib.HumanEyesIM) && player.perkv1(IMutationsLib.HumanEyesIM) >= 3 && player.racialScore(Races.HUMAN) > 17) {
-			accrmodpenalty -= 5;
-			if (player.perkv1(IMutationsLib.HumanEyesIM) >= 4) accrmodpenalty -= 5;
-		}
-        if (player.weaponRangeName == "Avelynn") accrmodpenalty -= 5;
-        if (accrmodpenalty < 0) accrmodpenalty = 0;
-        return accrmodpenalty;
+        return general.arrowsAccuracyPenalty();
     }
 
     public function throwingAccuracy():Number {
@@ -2824,31 +2780,7 @@ public class Combat extends BaseContent {
     }
 
     public function get weaponRangeAmmo():String {
-        var ammoWord:String;
-        switch (player.weaponRangeName) {
-            case "Lactoblaster":
-                ammoWord = "milky streams";
-                break;
-            case "Touhouna M3":
-                ammoWord = "bullets";
-                break;
-            case "M1 Cerberus":
-                ammoWord = "pellets";
-                break;
-            case "Harkonnen" :
-                ammoWord = "shell";
-                break;
-            case "Harpoon gun" :
-                ammoWord = "harpoon";
-                break;
-            default:
-                ammoWord = "bullet";
-                break;
-        }
-        if (player.weaponRangePerk == "Bow") ammoWord = "arrow";
-        if (player.weaponRangePerk == "Crossbow") ammoWord = "bolt";
-        if (player.weaponRangePerk == "Throwing") ammoWord = "projectile";
-        return ammoWord;
+        return general.weaponRangeAmmo;
     }
 
     /**
@@ -2871,8 +2803,8 @@ public class Combat extends BaseContent {
             return;
         }
         //Incubus Scientist
-        if (monster is IncubusScientist && (monster as IncubusScientist).ShieldHits > 0) {
-            (monster as IncubusScientist).ShieldsHitRanged();
+        if (monster is IncubusScientist && (monster as IncubusScientist).shieldHits > 0) {
+            (monster as IncubusScientist).shieldsHitRanged();
             enemyAIImpl();
             return;
         }
@@ -4640,7 +4572,7 @@ public class Combat extends BaseContent {
                     // Migrate demondragonGroup meleeresponse()
                     // Migrate frost giant boulder check. Every single one of them. And not just a giant, but the giants and the children too!
                     // Migrate worm. Worm is so special they can skip the rest of your shit (first attack guaranteed then call enemyAI() and end)
-                    // Migrate Incubus Scientist ShieldHits checks and ShieldsHitMelee()
+                    // Migrate Incubus Scientist shieldHits checks and ShieldsHitMelee()
                     if(monster.midAttackSeal()){
                         // rest of the attack here
 

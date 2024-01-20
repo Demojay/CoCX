@@ -10,6 +10,8 @@ import classes.Scenes.Dungeons.DungeonAbstractContent;
 import classes.Scenes.SceneLib;
 import classes.StatusEffects;
 import classes.internals.WeightedDrop;
+import classes.Scenes.Combat.CombatAbility;
+import classes.Scenes.Combat.General.RangeAttackSkill;
 
 public class IncubusScientist extends Monster {
 
@@ -59,45 +61,45 @@ public class IncubusScientist extends Monster {
         }
     }
 
-    public var ShieldHits:int;
+    public var shieldHits:int;
     private var ShieldCooldown:Number;
 
     private function ShieldsUp():void {
         outputText("You notice the demon touch something in his lab coat. A thin veil of blue energy forms around him, and he smirks. “<i>Break this, you primitive!</i>”\n\n");
-        ShieldHits = 4;
+        shieldHits = 4;
     }
 
     //TODO: hook these two functions somehow
     public function ShieldsHitMelee():void {
         outputText("Your [weapon] slams hard into the blue light, sliding off it with a shower of sparks.\n\n");
-        --ShieldHits;
-        if (ShieldHits == 3) {
+        --shieldHits;
+        if (shieldHits == 3) {
             outputText("The shield is firm, it’s like hitting a wall!\n\n");
-        } else if (ShieldHits == 2) {
+        } else if (shieldHits == 2) {
             outputText("The light bends to your attack, but springs right back into place.\n\n");
-        } else if (ShieldHits == 1) {
+        } else if (shieldHits == 1) {
             outputText("The shield flashes red, and the demon scientist takes a half-step back, the ferocity of your strike seeming to get to him.\n\n");
-        } else if (ShieldHits == 0) {
+        } else if (shieldHits == 0) {
             ShieldCooldown = 3;
             outputText("You drive your [weapon] through the shield. The demon’s eyes are wide, and he inhales sharply. He presses the button in his coat, but no shield comes back into place. Smoke rises from his coat, and he plants his feet, grinding his teeth.\n\n");
         }
     }
 
-    public function ShieldsHitRanged():void {
-        outputText("Your [weapon] slams hard into the blue light, sliding off it with a shower of sparks.\n\n");
-        --ShieldHits;
-        if (ShieldHits == 3) {
-            outputText("Your [projectile] strikes the demon scientist, but he doesn’t even seem to notice the strike. He laughs, raising his pistol and taking another shot at you.\n\n");
+    public function shieldsHitRanged(display:Boolean = true):void {
+        if (display) outputText("Your [weapon] slams hard into the blue light, sliding off it with a shower of sparks.\n\n");
+        --shieldHits;
+        if (shieldHits == 3) {
+            if (display) outputText("Your [projectile] strikes the demon scientist, but he doesn’t even seem to notice the strike. He laughs, raising his pistol and taking another shot at you.\n\n");
             createStatusEffect(StatusEffects.Attacks, 1, 0, 0, 0);
-        } else if (ShieldHits == 2) {
-            outputText("Your [projectile] strikes the demon scientist, but his shield flashes, blocking the attack. He frowns, raising his pistol and taking another shot at you.\n\n");
+        } else if (shieldHits == 2) {
+            if (display) outputText("Your [projectile] strikes the demon scientist, but his shield flashes, blocking the attack. He frowns, raising his pistol and taking another shot at you.\n\n");
             createStatusEffect(StatusEffects.Attacks, 1, 0, 0, 0);
-        } else if (ShieldHits == 1) {
-            outputText("Your [projectile] strikes the demon scientist's shield, which is visibly cracking'. He sweats, raising his pistol and taking another shot at you.\n\n");
+        } else if (shieldHits == 1) {
+            if (display) outputText("Your [projectile] strikes the demon scientist's shield, which is visibly cracking'. He sweats, raising his pistol and taking another shot at you.\n\n");
             createStatusEffect(StatusEffects.Attacks, 1, 0, 0, 0);
-        } else if (ShieldHits == 0) {
+        } else if (shieldHits == 0) {
             ShieldCooldown = 3;
-            outputText(" The shield shatters, and your [projectile] lands. He looks down at the [projectile] in his gut.\n\n");
+            if (display) outputText(" The shield shatters, and your [projectile] lands. He looks down at the [projectile] in his gut.\n\n");
         }
     }
 
@@ -111,11 +113,19 @@ public class IncubusScientist extends Monster {
     }
 
     override public function midAttackSeal():Boolean{
-        if (ShieldHits > 0) {
+        if (shieldHits > 0) {
             ShieldsHitMelee();
             return false;
         }
         return true;
+    }
+
+    override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
+        if (ability is RangeAttackSkill && shieldHits > 0) {
+            shieldsHitRanged(display);
+            return true;
+        }
+        return false;
     }
 
     override public function defeated(hpVictory:Boolean):void {
@@ -129,7 +139,7 @@ public class IncubusScientist extends Monster {
 
     override protected function performCombatAction():void {
         if (ShieldCooldown > 0) --ShieldCooldown;
-		if (ShieldCooldown == 0 && ShieldHits == 0) ShieldsUp();
+		if (ShieldCooldown == 0 && shieldHits == 0) ShieldsUp();
         if (HP < maxHP() * 0.6) {
             serum();
             return;

@@ -6,6 +6,8 @@ import classes.BodyParts.Hips;
 import classes.Scenes.SceneLib;
 import classes.StatusEffects.Combat.AmilyVenomDebuff;
 import classes.Scenes.Combat.CombatAbilities;
+import classes.Scenes.Combat.CombatAbility;
+import classes.Scenes.Combat.General.RangeAttackSkill;
 
 /**
 	 * ...
@@ -27,6 +29,17 @@ import classes.Scenes.Combat.CombatAbilities;
 			// of course swap this around too
 			else return true;
 		}
+
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
+			if (ability is RangeAttackSkill && hasStatusEffect(StatusEffects.Concentration)) {
+				var multipleAttacks:Boolean = (ability as RangeAttackSkill).getNumberOfAttacks() >= 2;
+				if (display) outputText("Amily easily glides around your attack" + (multipleAttacks? "s" : "") + " thanks to her complete concentration on your movements.\n\n");
+				return true;
+			}
+			return false;
+		}
+
+
 		override protected function performCombatAction():void
 		{
 			if(!hasStatusEffect(StatusEffects.Concentration) && rand(4) == 0) amilyConcentration();

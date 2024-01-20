@@ -243,17 +243,19 @@ import classes.Scenes.Combat.CombatAbilities;
 		
 		/**
 		 * Called when monster is targeted with player's ability after it started to cast (used mana etc) but before any text output. Can interrupt ability usage (return true);
-		 * @param ability
+		 * @param ability (CombatAbility) - the ability being intercepted
+		 * @param display (Boolean) - print out text
 		 * @return true if ability was intercepted and should not apply its effect, false if it should proceed as usual
 		 */
-		public function interceptPlayerAbility(ability:CombatAbility):Boolean {
+		public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
 			// default - do nothing
 			return false;
 		}
 		
 		/**
 		 * Called after monster was affected by player's ability.
-		 * @param ability
+		 * @param ability (CombatAbility) - the ability being reacted to
+		 * @param display (Boolean) - print out text
 		 */
 		public function postPlayerAbility(ability:CombatAbility, display:Boolean = true):void {
 			// default - do nothing

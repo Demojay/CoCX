@@ -20,10 +20,10 @@ public class FrostGiant extends Monster
 			else return true;
 		}
 
-		override public function interceptPlayerAbility(ability:CombatAbility):Boolean {
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
 			if (player.hasStatusEffect(StatusEffects.GiantBoulder)) {
 				if (ability is AbstractSpell) {
-					giantBoulderHit(2);
+					giantBoulderHit(2, display);
 					return true;
 				}
 			}
@@ -178,16 +178,19 @@ public class FrostGiant extends Monster
 			}
 			giantBoulderHit(1);
 		}
-		public function giantBoulderHit(mode:int = 0):void {
+		public function giantBoulderHit(mode:int = 0, display:Boolean = true):void {
 			clearOutput();
-			if (mode == 0) outputText("You charge at the giant, running as fast as you can, hoping to get to him before he can throw the huge rock. However, you getting closer just makes it easier for him to hit you, and he does, the full force of the boulder hitting your upper body square-on, whipping you directly down into the snow while the boulder mercifully lands some yards away. ");
-			else if (mode == 1) outputText(", but you do look up just in time to nearly avoid the large boulder he chucked your way. Scrambling to react, you jump to the side, only to realize you chose the wrong side. The boulder hits you in the back, propelling you.  Battered, beaten, bruised, you struggle to stand, when the giant picks you up, laughs in his deep, mighty bellow, and punts you over a mountain. You land several feet deep in a snowbank, and see something flying toward you before passing out. ");
-			else outputText("You begin to cast, focusing intently on summoning your magic. Too focused, though, as the giant propels the boulder in an arc to you. You notice the boulder just in time to not be crushed by it, though it still hits you and you fly several dozen yards before hitting a nice, jagged rock face. ");
+
+			if (display) {
+				if (mode == 0) outputText("You charge at the giant, running as fast as you can, hoping to get to him before he can throw the huge rock. However, you getting closer just makes it easier for him to hit you, and he does, the full force of the boulder hitting your upper body square-on, whipping you directly down into the snow while the boulder mercifully lands some yards away. ");
+				else if (mode == 1) outputText(", but you do look up just in time to nearly avoid the large boulder he chucked your way. Scrambling to react, you jump to the side, only to realize you chose the wrong side. The boulder hits you in the back, propelling you.  Battered, beaten, bruised, you struggle to stand, when the giant picks you up, laughs in his deep, mighty bellow, and punts you over a mountain. You land several feet deep in a snowbank, and see something flying toward you before passing out. ");
+				else outputText("You begin to cast, focusing intently on summoning your magic. Too focused, though, as the giant propels the boulder in an arc to you. You notice the boulder just in time to not be crushed by it, though it still hits you and you fly several dozen yards before hitting a nice, jagged rock face. ");
+			}
 			if (player.hasStatusEffect(StatusEffects.GiantBoulder)) player.removeStatusEffect(StatusEffects.GiantBoulder);
 			var damage:int = (str * 5) + 1000 + rand(100);
 			if (damage < 1000) damage = 1000;
 			player.takePhysDamage(damage, true);
-			outputText("\n\n");
+			if (display) outputText("\n\n");
 		}
 		public function giantBoulderMiss():void {
 			clearOutput();

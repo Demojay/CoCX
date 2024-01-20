@@ -19,6 +19,7 @@ import coc.view.CoCButton;
 import flash.utils.Dictionary;
 
 import mx.formatters.NumberFormatter;
+import classes.Scenes.Combat.General.RangeAttackSkill;
 
 public class Lethice extends Monster
 	{
@@ -500,6 +501,17 @@ public class Lethice extends Monster
 					" <i>\"How will you beat me without your magics?\"</i>\n\n");
 				createStatusEffect(StatusEffects.Shell, 2, 0, 0, 0);
 			}
+		}
+
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
+			if (ability is RangeAttackSkill && hasStatusEffect(StatusEffects.Shell)) {
+				if (display) {
+					var multipleAttacks:Boolean = (ability as RangeAttackSkill).getNumberOfAttacks() >= 2;
+					outputText("Your " + SceneLib.combat.weaponRangeAmmo + (multipleAttacks ? "s" : "") +" pings of the side of the shield and spins end over end into the air. Useless.\n\n");
+				}
+				return true;
+			}
+			return false;
 		}
 		
 		override public function defeated(hpVictory:Boolean):void

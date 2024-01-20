@@ -10,6 +10,8 @@ import classes.Stats.Buff;
 import classes.StatusEffects;
 
 import coc.view.CoCButton;
+import classes.Scenes.Combat.CombatAbility;
+import classes.Scenes.Combat.General.RangeAttackSkill;
 
 public class DriderIncubus extends AbstractSpiderMorph
 	{
@@ -54,6 +56,15 @@ public class DriderIncubus extends AbstractSpiderMorph
 		private static const VENOM_SPEED_DRAIN_FLAT:int = 30;
 		private static const VENOM_SPEED_DRAIN_MULT:int = 10;
 		
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
+			if (ability is RangeAttackSkill && player.hasStatusEffect(StatusEffects.TaintedMind)) {
+				if (display) outputText("You ready an attack, but find your hands groping your own body instead. Somehow the demon’s magic has made it impossible to strike at him, crossing wires that weren’t meant to be crossed. Frowning, you look down at your more aroused form, determined not to fall for this a second time.");
+    			player.takeLustDamage(Math.max(15, maxLust() * 0.05), true);
+				return true;
+			}
+			return false;
+		}
+
 		override public function defeated(hpVictory:Boolean):void
 		{
 			SceneLib.d3.driderIncubus.beatTheSpooderbutt(hpVictory);

@@ -7,6 +7,8 @@ import classes.BodyParts.Wings;
 import classes.GlobalFlags.kFLAGS;
 import classes.Scenes.SceneLib;
 import classes.internals.WeightedDrop;
+import classes.Scenes.Combat.CombatAbility;
+import classes.Scenes.Combat.General.RangeAttackSkill;
 
 public class Vala extends Monster
 	{
@@ -51,6 +53,17 @@ public class Vala extends Monster
 			player.takeLustDamage(4 + player.cor/10, true);
 		}
 
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
+			if (ability is RangeAttackSkill && !hasStatusEffect(StatusEffects.Stunned) && rand(10) < 7) {
+				if (display) {
+					var multipleAttacks:Boolean = (ability as RangeAttackSkill).getNumberOfAttacks() >= 2;
+					outputText("Vala flaps her wings and twists her body. Between the sudden gust of wind and her shifting of position, the " + SceneLib.combat.weaponRangeAmmo + (multipleAttacks ? "s" : "") +" goes wide.\n\n");
+				}
+				return true;
+			}
+
+			return false;
+		}
 
 		//[Fight dialog]
 		public function valaCombatDialogue():void {

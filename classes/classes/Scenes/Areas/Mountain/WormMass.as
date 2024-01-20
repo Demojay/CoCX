@@ -6,6 +6,7 @@ import classes.BodyParts.Hips;
 import classes.Scenes.SceneLib;
 import classes.Scenes.Combat.CombatAbility;
 import classes.Scenes.Combat.General.TeaseSkill;
+import classes.Scenes.Combat.General.RangeAttackSkill;
 
 public class WormMass extends Monster
 	{
@@ -62,9 +63,17 @@ public class WormMass extends Monster
 			return false;
 		}
 
-		override public function interceptPlayerAbility(ability:CombatAbility):Boolean {
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
 			if (ability is TeaseSkill) {
-				outputText("Thinking to take advantage of its humanoid form, you wave your cock and slap your ass. However, the creature fails to react to your suggestive actions.\n\n");
+				if (display) outputText("Thinking to take advantage of its humanoid form, you wave your cock and slap your ass. However, the creature fails to react to your suggestive actions.\n\n");
+				return true;
+			}
+
+			if (ability is RangeAttackSkill) {
+				if (display) {
+					var multipleAttacks:Boolean = (ability as RangeAttackSkill).getNumberOfAttacks() >= 2;
+            		outputText("The " + SceneLib.combat.weaponRangeAmmo + (multipleAttacks? "s" : "") +" slips between the worms, sticking into the ground.\n\n");
+				}
 				return true;
 			}
 

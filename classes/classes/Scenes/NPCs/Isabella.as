@@ -8,6 +8,7 @@ import classes.GlobalFlags.kFLAGS;
 import classes.Scenes.SceneLib;
 import classes.Scenes.Combat.CombatAbility;
 import classes.Scenes.Combat.SpellsWhite.BlindSpell;
+import classes.Scenes.Combat.General.RangeAttackSkill;
 
 public class Isabella extends Monster
 	{
@@ -120,6 +121,25 @@ public class Isabella extends Monster
 			else HP += 100;
 			lust += 5;
 			player.takeLustDamage((10+player.lib/20), true);
+		}
+
+		override public function interceptPlayerAbility(ability:CombatAbility, display:Boolean = true):Boolean {
+			if (ability is RangeAttackSkill && !hasStatusEffect(StatusEffects.Stunned)) {
+				if (display) {
+					var multipleAttacks:Boolean = (ability as RangeAttackSkill).getNumberOfAttacks() >= 2;
+					if (hasStatusEffect(StatusEffects.Blind) || hasStatusEffect(StatusEffects.InkBlind)) {
+						outputText("Isabella hears the shot" + (multipleAttacks? "s" : "") + " and turns her shield towards " + (multipleAttacks? "them" : "it") + ", completely blocking " + (multipleAttacks? "them" : "it") + " with her wall of steel.\n\n");
+					} else {
+						outputText("Your " + SceneLib.combat.weaponRangeAmmo + (multipleAttacks >= 2 ? "s" : "") + " thunks into Isabella's shield, completely blocked by the wall of steel.\n\n");
+					}
+					if (SceneLib.isabellaFollowerScene.isabellaAccent())
+						outputText("\"<i>You remind me of ze horse-people.  Zey cannot deal vith mein shield either!</i>\" cheers Isabella.\n\n");
+					else outputText("\"<i>You remind me of the horse-people.  They cannot deal with my shield either!</i>\" cheers Isabella.\n\n");
+				}
+				
+				return true;
+			}
+			return false;
 		}
 
 		override public function postPlayerAbility(ability:CombatAbility, display:Boolean = true):void {
